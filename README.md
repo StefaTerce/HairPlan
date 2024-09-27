@@ -4,6 +4,7 @@ Una piattaforma intuitiva per gestire appuntamenti dei parrucchieri, pensato per
 **è Possibile registrarsi?**
 
 Request
+
 {
   "username":"Terceros",
   "email":"email@email.com",
@@ -12,12 +13,14 @@ Request
 }
 
 Response
+
 {
   "username":"Terceros",
   "status": "Registered In",
 }
 
 **In Caso di errore**
+Request
 
 {
   "username": "Terceros",
@@ -37,18 +40,21 @@ Response (in caso di errore)
 **è Possibile fare il login?**
 
 Request
+
 {
   "username":"Terceros",
   "pass":"password",
 }
 
 Response
+
 {
   "username":"Terceros",
   "status": "Logged In",
 }
 
 Response (in caso di errore)
+
 {
   "message": "Credenziali non valide."
 }
@@ -56,13 +62,16 @@ Response (in caso di errore)
 
 **è possibile prenotare**
 
+Request
+
 {
   "username": "Terceros",
   "date": "2024-09-30",
   "time": "15:00"
 }
 
-Response 
+Response
+
 {
   "username": "Terceros",
   "status": "Prenotazione completata",
@@ -71,6 +80,7 @@ Response
 }
 
 Response (in caso di errore)
+
 {
   "message": "Data o ora non disponibili."
 }
@@ -80,6 +90,7 @@ Response (in caso di errore)
 
 
 Request
+
 {
   "username": "Terceros",
   "date": "2024-09-30",
@@ -87,6 +98,7 @@ Request
 }
 
 Response
+
 {
   "username": "Terceros",
   "status": "Prenotazione annullata",
@@ -95,6 +107,7 @@ Response
 }
 
 Response (in caso di errore)
+
 {
   "message": "Nessuna prenotazione trovata per la data e ora specificate."
 }

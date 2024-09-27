@@ -19,7 +19,8 @@ Response
   "status": "Registered In",
 }
 
-**In Caso di errore**
+**In Caso di errore per eta**
+
 Request
 
 {

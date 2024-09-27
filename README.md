@@ -1,7 +1,7 @@
 # HairPlan
 Una piattaforma intuitiva per gestire appuntamenti dei parrucchieri, pensato per professionisti che desiderano organizzare le proprie prenotazioni con facilità ed efficienza.
 
-è Possibile registrarsi?
+##è Possibile registrarsi?
 
 Request
 {

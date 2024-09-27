@@ -26,6 +26,8 @@ In Caso di errore
   "pass": "password"
 }
 
+Response (in caso di errore)
+
 {
   "message": "L'età deve essere almeno 13 anni."
 }

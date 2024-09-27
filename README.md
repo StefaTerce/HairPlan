@@ -10,11 +10,13 @@ Request
   "age":"18",
   "pass":"password",
 }
+
 Response
 {
   "username":"Terceros",
   "status": "Registered In",
 }
+
 In Caso di errore
 {
   "username": "Terceros",
@@ -22,6 +24,7 @@ In Caso di errore
   "age": "12",
   "pass": "password"
 }
+
 {
   "message": "L'età deve essere almeno 13 anni."
 }
@@ -35,11 +38,13 @@ Request
   "username":"Terceros",
   "pass":"password",
 }
+
 Response
 {
   "username":"Terceros",
   "status": "Logged In",
 }
+
 Response (in caso di errore)
 {
   "message": "Credenziali non valide."
@@ -53,6 +58,7 @@ Response (in caso di errore)
   "date": "2024-09-30",
   "time": "15:00"
 }
+
 Response 
 {
   "username": "Terceros",
@@ -60,10 +66,38 @@ Response
   "date": "2024-09-30",
   "time": "15:00"
 }
+
 Response (in caso di errore)
 {
   "message": "Data o ora non disponibili."
 }
+
+
+È possibile annullare la prenotazione?
+
+
+Request
+{
+  "username": "Terceros",
+  "date": "2024-09-30",
+  "time": "15:00"
+}
+
+Response
+{
+  "username": "Terceros",
+  "status": "Prenotazione annullata",
+  "date": "2024-09-30",
+  "time": "15:00"
+}
+
+Response (in caso di errore)
+{
+  "message": "Nessuna prenotazione trovata per la data e ora specificate."
+}
+
+
+
 
 
 

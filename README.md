@@ -2,6 +2,7 @@
 Una piattaforma intuitiva per gestire appuntamenti dei parrucchieri, pensato per professionisti che desiderano organizzare le proprie prenotazioni con facilità ed efficienza.
 
 è Possibile registrarsi?
+
 Request
 {
   "username":"Terceros",
@@ -25,7 +26,10 @@ In Caso di errore
   "message": "L'età deve essere almeno 13 anni."
 }
 
+
+
 è Possibile fare il login?
+
 Request
 {
   "username":"Terceros",
@@ -41,7 +45,9 @@ Response (in caso di errore)
   "message": "Credenziali non valide."
 }
 
+
 è possibile prenotare
+
 {
   "username": "Terceros",
   "date": "2024-09-30",

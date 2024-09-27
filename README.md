@@ -17,7 +17,7 @@ Response
   "status": "Registered In",
 }
 
-In Caso di errore
+**In Caso di errore**
 
 {
   "username": "Terceros",
@@ -34,7 +34,7 @@ Response (in caso di errore)
 
 
 
-è Possibile fare il login?
+**è Possibile fare il login?**
 
 Request
 {
@@ -54,7 +54,7 @@ Response (in caso di errore)
 }
 
 
-è possibile prenotare
+**è possibile prenotare**
 
 {
   "username": "Terceros",
@@ -76,7 +76,7 @@ Response (in caso di errore)
 }
 
 
-È possibile annullare la prenotazione?
+**È possibile annullare la prenotazione?**
 
 
 Request

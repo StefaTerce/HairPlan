@@ -115,6 +115,7 @@ Response (in caso di errore)
 
 
 
+![image](https://github.com/user-attachments/assets/16a2a25c-3f17-4bcf-a3a5-8b563e7ac2f8)
 
 
 

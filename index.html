@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hairplan - Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Aggiungi questo CSS per il footer sempre in fondo */
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <header class="bg-dark text-white text-center py-4">
+        <h1>Benvenuto su Hairplan</h1>
+        <p>Gestisci le tue prenotazioni con facilità per tutti i parrucchieri.</p>
+    </header>
+
+    <main class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form id="loginForm" class="p-4 border rounded shadow">
+                    <h2 class="text-center mb-4">Accedi</h2>
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Accedi</button>
+                </form>
+                <div class="text-center mt-3">
+                    <a href="register.html" class="btn btn-secondary">Registrati</a>
+                </div> 
+                <!-- Messaggio di login -->
+                <div id="loginMessage" class="mt-3"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white text-center py-4 mt-5">
+        <p>&copy; 2024 Hairplan. Tutti i diritti riservati.</p>
+    </footer>
+
+    <script>
+        // Intercetta il submit del modulo
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();  // Previene il comportamento di submit di default
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Invio della richiesta di login tramite Fetch
+            fetch('http://135.181.35.51:3000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, pass: password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messageDiv = document.getElementById('loginMessage');
+                if (data.status === 'Logged In') {
+                    messageDiv.innerHTML = `<div class="alert alert-success">Benvenuto, ${data.username}!</div>`;
+                } else {
+                    messageDiv.innerHTML = `<div class="alert alert-danger">Errore: ${data.message}</div>`;
+                }
+            })
+            .catch(error => {
+                const messageDiv = document.getElementById('loginMessage');
+                messageDiv.innerHTML = `<div class="alert alert-danger">Errore nella connessione al server.</div>`;
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -115,7 +115,8 @@ Response (in caso di errore)
 
 
 
-![image](https://github.com/user-attachments/assets/6e22f266-6a55-4f7b-b24f-e46a13cb9116)
+![image](https://github.com/user-attachments/assets/bb5ccc44-39bc-4e3b-963b-e5e61375adad)
+
 
 
 

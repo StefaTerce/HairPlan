@@ -1,32 +1,22 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hairplan - Home</title>
+    <title>Login - Hairplan</title>
+
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        /* Aggiungi questo CSS per il footer sempre in fondo */
-        html, body {
-            height: 100%;
-            margin: 0;
-        }
-        body {
-            display: flex;
-            flex-direction: column;
-        }
-        main {
-            flex: 1;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
+
 <body>
     <header class="bg-dark text-white text-center py-4">
         <h1>Benvenuto su Hairplan</h1>
         <p>Gestisci le tue prenotazioni con facilità per tutti i parrucchieri.</p>
     </header>
-
+    <br>
     <main class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
@@ -36,15 +26,19 @@
                         <label for="username" class="form-label">Username</label>
                         <input type="text" class="form-control" id="username" name="username" required>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3 position-relative">
                         <label for="password" class="form-label">Password</label>
                         <input type="password" class="form-control" id="password" name="password" required>
+                        <span id="togglePassword" class="position-absolute" style="right: 10px; top: 38px; cursor: pointer;">
+                            <i class="fas fa-eye" id="eyeIcon"></i>
+                        </span>
+                        </button>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Accedi</button>
                 </form>
                 <div class="text-center mt-3">
                     <a href="register.html" class="btn btn-secondary">Registrati</a>
-                </div> 
+                </div>
                 <!-- Messaggio di login -->
                 <div id="loginMessage" class="mt-3"></div>
             </div>
@@ -57,24 +51,36 @@
 
     <script>
         // Intercetta il submit del modulo
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
+        document.getElementById('loginForm').addEventListener('submit', function (event) {
             event.preventDefault();  // Previene il comportamento di submit di default
             const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+            const pass = document.getElementById('password').value;
+
+            const userData = {
+                username: username,
+                pass: pass
+            };
 
             // Invio della richiesta di login tramite Fetch
-            fetch('http://135.181.35.51:3000/login', {
+            fetch('http://localhost:3000/login', {  // Endpoint API corretto
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, pass: password })
+                body: JSON.stringify(userData) // Assicurati che i nomi dei campi siano corretti
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Errore durante la richiesta');
+                }
+                return response.json();
+            })
             .then(data => {
                 const messageDiv = document.getElementById('loginMessage');
-                if (data.status === 'Logged In') {
+                if (data.success) {  // Controlla se success è true
+                    localStorage.setItem('token', data.token);
                     messageDiv.innerHTML = `<div class="alert alert-success">Benvenuto, ${data.username}!</div>`;
+                    window.location.href = 'calendari.html';
                 } else {
                     messageDiv.innerHTML = `<div class="alert alert-danger">Errore: ${data.message}</div>`;
                 }
@@ -84,8 +90,42 @@
                 messageDiv.innerHTML = `<div class="alert alert-danger">Errore nella connessione al server.</div>`;
             });
         });
+
+        // Funzione per mostrare/nascondere la password
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordField = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        togglePassword.addEventListener('click', () => {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            eyeIcon.classList.toggle('fa-eye-slash');
+        });
     </script>
 
+    <style>
+        /* CSS per il footer sempre in fondo */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            display: block;
+        }
+
+        main {
+            min-height: calc(100vh - 100px);
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

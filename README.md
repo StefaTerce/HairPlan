@@ -1,6 +1,6 @@
 # HairPlan
 
-**Descrizione**
+##Descrizione
 
 HairPlan è un'applicazione progettata per la gestione delle prenotazioni nei saloni di parrucchiere. La piattaforma consente ai clienti di prenotare appuntamenti, visualizzare i servizi disponibili e ai saloni di organizzare e gestire i propri calendari. L'obiettivo di HairPlan è migliorare l'efficienza nella gestione delle prenotazioni per i saloni e semplificare l'esperienza di prenotazione per i clienti.
 

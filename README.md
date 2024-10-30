@@ -13,7 +13,7 @@ HairPlan risolve le problematiche legate alla gestione delle prenotazioni nei sa
 
 ## Competitor
 
-SimplyBook.me
+- SimplyBook.me
 
 Calendly
 

@@ -122,7 +122,7 @@ Tipo: Non Funzionale
 Descrizione: L’interfaccia è sviluppata tenendo conto delle linee guida per l’accessibilità, rendendola usabile anche per utenti con disabilità.
 Tipo: Non Funzionale
 
-  ![image](https://github.com/user-attachments/assets/03ee1aef-464b-4095-89f7-3ba45184c765)
+  ![image]([https://github.com/user-attachments/assets/03ee1aef-464b-4095-89f7-3ba45184c765](https://yuml.me/terceros/hairplan.svg))
 
 
 **è Possibile registrarsi?**

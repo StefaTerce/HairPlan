@@ -33,6 +33,37 @@ HairPlan risolve le problematiche legate alla gestione delle prenotazioni nei sa
 ## Problema
 HairPlan risolve il problema della gestione e organizzazione delle prenotazioni nei saloni di parrucchiere, facilitando la prenotazione per i clienti e l’organizzazione per i gestori del salone.
 
+## Requisti Iniziali
+
+Sito Web e Creazione di Profilo
+
+Profilo Cliente: 
+
+Include nome, cognome, email e numero di telefono per gestire le prenotazioni e la comunicazione con il salone.
+Profilo Parrucchiere: Contiene nome del salone, indirizzo, servizi offerti, orari di disponibilità e politiche di cancellazione.
+Interfaccia Utente
+
+### Interfaccia Cliente:
+
+Visualizzazione del calendario delle disponibilità per selezionare data, ora e servizio desiderato.
+Opzione per prenotare un appuntamento con conferma immediata o in attesa di approvazione.
+Sezione notifiche per aggiornamenti sugli appuntamenti: conferme, modifiche, o annullamenti da parte del salone.
+Accesso al proprio storico delle prenotazioni e possibilità di cancellare o riprogrammare appuntamenti futuri.
+Sezione di comunicazione diretta con il salone per domande o richieste specifiche.
+
+Interfaccia Parrucchiere:
+
+Pannello di gestione delle prenotazioni con visione del calendario settimanale/mensile e delle fasce orarie occupate/libere.
+Funzionalità di conferma, modifica o annullamento delle prenotazioni.
+Creazione di promozioni o offerte speciali visibili ai clienti nel calendario.
+Sezione notifiche per aggiornamenti sulle prenotazioni e richieste dei clienti.
+Accesso alla sezione di comunicazione con i clienti per eventuali richieste o modifiche alle prenotazioni.
+
+Interfaccia Amministrativa:
+
+Possibilità di aggiungere e aggiornare i servizi offerti, definire fasce orarie, gestire il calendario delle disponibilità e personalizzare le politiche di cancellazione.
+Sezione per creare e gestire profili multipli per diversi parrucchieri all'interno dello stesso salone, con gestione centralizzata delle disponibilità.
+
 ## Requisiti di Dominio
 
 1.1. Conoscenze Specifiche

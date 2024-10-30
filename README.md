@@ -15,17 +15,17 @@ HairPlan risolve le problematiche legate alla gestione delle prenotazioni nei sa
 
 - SimplyBook.me
 
-Calendly
+- Calendly
 
-Acuity Scheduling
+- Acuity Scheduling
 
-Book Like a Boss
+- Book Like a Boss
 
-Picktime
+- Picktime
 
-Doodle
+- Doodle
 
-Goldie
+- Goldie
 
 ## Requisiti di Dominio
 

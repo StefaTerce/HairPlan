@@ -40,7 +40,7 @@ HairPlan risolve il problema della gestione e organizzazione delle prenotazioni 
 
 Profilo Cliente: Include nome, cognome, email e numero di telefono per gestire le prenotazioni e la comunicazione con il salone.
 
-Profilo Parrucchiere: Contiene nome del salone, indirizzo, servizi offerti, orari di disponibilità e politiche di cancellazione.
+Profilo Parrucchiere: Contiene Include nome, cognome, email , numero di telefono, nome del salone, indirizzo, servizi offerti.
 Interfaccia Utente
 
 ### Interfaccia: 

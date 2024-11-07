@@ -20,15 +20,12 @@ HairPlan risolve le problematiche legate alla gestione delle prenotazioni nei sa
 
 - Calendly
 
-- Acuity Scheduling
-
 - Book Like a Boss
 
 - Picktime
 
 - Doodle
 
-- Goldie
 
 ## Problema
 HairPlan risolve il problema della gestione e organizzazione delle prenotazioni nei saloni di parrucchiere, facilitando la prenotazione per i clienti e l’organizzazione per i gestori del salone.

@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
-const cors = require('cors'); 
+const cors = require('cors');
 const PORT = 3000;
 
 const app = express();
@@ -66,9 +66,69 @@ const db = new sqlite3.Database('database.db', (err) => {
                     console.log('Tabella prenotazioni creata o già esistente.');
                 }
             });
+            // Tabella parrucchieri con il campo username
+            db.run(`CREATE TABLE IF NOT EXISTS parrucchieri (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL UNIQUE, -- Aggiunto campo username univoco
+                nome TEXT NOT NULL,
+                cognome TEXT NOT NULL,
+                email TEXT NOT NULL,
+                telefono TEXT NOT NULL,
+                nome_salone TEXT,
+                indirizzo TEXT,
+                servizi_offerti TEXT,
+                pass TEXT NOT NULL
+            )`, (err) => {
+                if (err) {
+                    console.error('Errore durante la creazione della tabella parrucchieri:', err.message);
+                } else {
+                    console.log('Tabella parrucchieri creata o già esistente.');
+                }
+            });
+
         });
     }
 });
+
+
+app.post('/parrucchieri', (req, res) => {
+    const { username, nome, cognome, email, telefono, nome_salone, indirizzo, servizi_offerti, pass } = req.body;
+
+    // Controlla se tutti i dati richiesti sono presenti
+    if (!username || !nome || !cognome || !email || !telefono || !pass) {
+        return res.status(400).json({ message: 'Dati mancanti: username, nome, cognome, email, telefono o password' });
+    }
+
+    // Verifica che l'username sia unico in entrambe le tabelle
+    const queryCheckUsername = `
+        SELECT username FROM utenti WHERE username = ? 
+        UNION 
+        SELECT username FROM parrucchieri WHERE username = ?
+    `;
+
+    db.all(queryCheckUsername, [username, username], (err, rows) => {
+        if (err) {
+            console.error('Errore durante il controllo dell\'username:', err); // Log dell'errore
+            return res.status(500).json({ message: 'Errore durante il controllo dell\'username' });
+        }
+
+        // Se ci sono risultati, l'username è già in uso
+        if (rows.length > 0) {
+            return res.status(400).json({ message: 'Username già in uso.' });
+        }
+
+        // Procedi con l'inserimento se l'username è unico
+        const queryInsert = `INSERT INTO parrucchieri (username, nome, cognome, email, telefono, nome_salone, indirizzo, servizi_offerti, pass) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        db.run(queryInsert, [username, nome, cognome, email, telefono, nome_salone, indirizzo, servizi_offerti, pass], function (err) {
+            if (err) {
+                console.error('Errore durante la creazione del profilo parrucchiere:', err); // Log dell'errore
+                return res.status(500).json({ message: 'Errore durante la creazione del profilo parrucchiere' });
+            }
+            res.status(201).json({ id: this.lastID, username: username, status: "Parrucchiere registrato" });
+        });
+    });
+});
+
 
 // Route per il login
 app.post('/login', (req, res) => {
@@ -76,22 +136,45 @@ app.post('/login', (req, res) => {
 
     console.log('Tentativo di login:', username); // Log dell'username
 
-    const query = `SELECT * FROM utenti WHERE username = ? AND pass = ?`;
-    db.get(query, [username, pass], (err, row) => {
+    const queryUtenti = `SELECT * FROM utenti WHERE username = ? AND pass = ?`;
+    const queryParrucchieri = `SELECT * FROM parrucchieri WHERE username = ? AND pass = ?`;
+
+    // Controlla prima nella tabella utenti
+    db.get(queryUtenti, [username, pass], (err, userRow) => {
         if (err) {
-            res.status(500).json({ message: 'Errore durante la lettura del database' });
-        } else if (row) {
-            res.status(200).json({
-                success: true, // Aggiungi questo campo
-                username: row.username,
-                status: "Logged In"
-            });
-        } else {
-            console.log('Credenziali non valide'); // Log dell'errore
-            res.status(401).json({ success: false, message: 'Credenziali non valide.' }); // Aggiungi success: false
+            return res.status(500).json({ message: 'Errore durante la lettura del database' });
         }
+        if (userRow) {
+            // Utente trovato
+            return res.status(200).json({
+                success: true,
+                username: userRow.username,
+                status: "Logged In",
+                role: "utente" // Specifica che è un utente
+            });
+        }
+
+        // Se non trovato tra gli utenti, controlla i parrucchieri
+        db.get(queryParrucchieri, [username, pass], (err, barberRow) => {
+            if (err) {
+                return res.status(500).json({ message: 'Errore durante la lettura del database' });
+            }
+            if (barberRow) {
+                // Parrucchiere trovato
+                return res.status(200).json({
+                    success: true,
+                    username: barberRow.username,
+                    status: "Logged In",
+                    role: "parrucchiere" // Specifica che è un parrucchiere
+                });
+            }
+
+            console.log('Credenziali non valide'); // Log dell'errore
+            return res.status(401).json({ success: false, message: 'Credenziali non valide.' });
+        });
     });
 });
+
 
 // Route per ottenere tutti gli utenti
 app.get('/utenti', (req, res) => {
@@ -110,41 +193,72 @@ app.get('/utenti', (req, res) => {
 app.post('/utenti', (req, res) => {
     const { username, email, age, pass } = req.body;
 
+    // Controlla se tutti i dati richiesti sono presenti
     if (!username || !email || !age || !pass) {
         return res.status(400).json({ message: 'Dati mancanti: username, email, age o password' });
     }
 
-    if (parseInt(age) < 13) {
-        return res.status(400).json({ message: "L'età deve essere almeno 13 anni." });
-    }
+    // Verifica che l'username sia unico
+    const queryCheckUsername = `
+        SELECT username FROM utenti WHERE username = ? 
+        UNION 
+        SELECT username FROM parrucchieri WHERE username = ?
+    `;
 
-    const queryInsert = `INSERT INTO utenti (username, email, age, pass) VALUES (?, ?, ?, ?)`;
-
-    db.run(queryInsert, [username, email, age, pass], function (err) {
+    db.get(queryCheckUsername, [username, username], (err, row) => {
         if (err) {
-            return res.status(500).json({ message: 'Errore durante l\'inserimento del nuovo utente nel database' });
+            console.error('Errore durante il controllo dell\'username:', err); // Log dell'errore
+            return res.status(500).json({ message: 'Errore durante il controllo dell\'username' });
         }
-        res.status(201).json({ username: username, status: "Registered In" });
+
+        // Se l'username è già in uso
+        if (row) {
+            return res.status(400).json({ message: 'Username già in uso.' });
+        }
+
+        // Procedi con l'inserimento se l'username è unico
+        const queryInsert = `INSERT INTO utenti (username, email, age, pass) VALUES (?, ?, ?, ?)`;
+        db.run(queryInsert, [username, email, age, pass], function (err) {
+            if (err) {
+                console.error('Errore durante l\'inserimento del nuovo utente nel database:', err); // Log dell'errore
+                return res.status(500).json({ message: 'Errore durante l\'inserimento del nuovo utente nel database' });
+            }
+            res.status(201).json({ username: username, status: "Utente registrato con successo" });
+        });
     });
 });
 
-// Route per creare un calendario per un utente
+
+// Route per creare un calendario per un parrucchiere
 app.post('/calendari', (req, res) => {
-    const { nome, descrizione, utente_id } = req.body; // Aggiunto descrizione
+    const { nome, descrizione, parrucchiere_id } = req.body; // Modificato a parrucchiere_id
 
-    if (!nome || !utente_id) {
-        return res.status(400).json({ message: 'Dati mancanti: nome o utente_id' });
+    if (!nome || !parrucchiere_id) {
+        return res.status(400).json({ message: 'Dati mancanti: nome o parrucchiere_id' });
     }
 
-    const queryInsert = `INSERT INTO calendari (nome, descrizione, utente_id) VALUES (?, ?, ?)`; // Aggiunto descrizione
-
-    db.run(queryInsert, [nome, descrizione, utente_id], function (err) {
+    // Verifica che il parrucchiere esista
+    const queryCheckParrucchiere = `SELECT * FROM parrucchieri WHERE id = ?`;
+    db.get(queryCheckParrucchiere, [parrucchiere_id], (err, row) => {
         if (err) {
-            return res.status(500).json({ message: 'Errore durante la creazione del calendario' });
+            return res.status(500).json({ message: 'Errore durante la verifica del parrucchiere' });
         }
-        res.status(201).json({ calendario_id: this.lastID, status: "Calendario creato" });
+        
+        if (!row) {
+            return res.status(404).json({ message: 'Parrucchiere non trovato.' });
+        }
+
+        // Se il parrucchiere esiste, crea il calendario
+        const queryInsert = `INSERT INTO calendari (nome, descrizione, utente_id) VALUES (?, ?, ?)`;
+        db.run(queryInsert, [nome, descrizione, parrucchiere_id], function (err) {
+            if (err) {
+                return res.status(500).json({ message: 'Errore durante la creazione del calendario' });
+            }
+            res.status(201).json({ calendario_id: this.lastID, status: "Calendario creato" });
+        });
     });
 });
+
 
 // Route per creare una prenotazione in un calendario
 app.post('/prenotazione', (req, res) => {
@@ -186,22 +300,47 @@ app.delete('/utenti', (req, res) => {
         return res.status(400).json({ message: 'Dati mancanti: username' });
     }
 
-    const queryDeleteUtente = `DELETE FROM utenti WHERE username = ?`;
-    db.run(queryDeleteUtente, [username], function (err) {
-        if (err) {
-            return res.status(500).json({ message: 'Errore durante l\'eliminazione dell\'utente' });
-        }
+    // Verifica la presenza dell'utente in entrambe le tabelle e cancellalo se esiste
+    const queryDeleteUser = `
+        DELETE FROM utenti WHERE username = ?;
+        DELETE FROM parrucchieri WHERE username = ?;
+    `;
 
-        if (this.changes > 0) {
-            res.status(200).json({
-                "username": username,
-                "status": "Utente, calendari e prenotazioni cancellati"
-            });
-        } else {
-            res.status(404).json({ message: 'Utente non trovato.' });
-        }
+    db.serialize(() => {
+        db.run(queryDeleteUser, [username, username], function (err) {
+            if (err) {
+                return res.status(500).json({ message: 'Errore durante l\'eliminazione dell\'utente o del parrucchiere' });
+            }
+
+            if (this.changes > 0) {
+                res.status(200).json({
+                    "username": username,
+                    "status": "Utente o parrucchiere, calendari e prenotazioni cancellati"
+                });
+            } else {
+                res.status(404).json({ message: 'Utente o parrucchiere non trovato.' });
+            }
+        });
     });
 });
+// Endpoint per ottenere tutti i calendari
+app.get('/calendari', (req, res) => {
+    const query = 'SELECT * FROM calendari';
+    
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            console.error('Errore durante il recupero dei calendari:', err);
+            return res.status(500).json({ message: 'Errore durante il recupero dei calendari' });
+        }
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Nessun calendario trovato.' });
+        }
+
+        res.status(200).json(rows);
+    });
+});
+
 
 // Avvio del server
 app.listen(PORT, () => {

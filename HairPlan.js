@@ -340,6 +340,35 @@ app.get('/calendari', (req, res) => {
         res.status(200).json(rows);
     });
 });
+app.get('/parrucchieri/servizio/:servizio', (req, res) => {
+    const servizio = req.params.servizio;
+
+    const queryParrucchieri = `
+        SELECT * FROM parrucchieri 
+        WHERE servizi_offerti LIKE ?
+    `;
+
+    db.all(queryParrucchieri, [`%${servizio}%`], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ message: 'Errore nel recupero dei parrucchieri.' });
+        }
+
+        res.status(200).json(rows);
+    });
+});
+app.get('/utenti/:id', (req, res) => {
+    const id = req.params.id;
+
+    const queryUtenti = `SELECT * FROM utenti WHERE id = ?`;
+
+    db.all(queryUtenti, [id], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ message: 'Errore nel recupero degli utenti.' });
+        }
+
+        res.status(200).json(rows);
+    });
+});
 
 
 // Avvio del server

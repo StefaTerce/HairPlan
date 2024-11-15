@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
 const PORT = 3000;
 
 const app = express();
@@ -11,6 +13,25 @@ app.use(cors());
 
 // Middleware per il parsing del body delle richieste
 app.use(bodyParser.json());
+
+// Configura Swagger
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'API HairPlan',
+            version: '1.0.0',
+            description: 'API per la gestione di utenti, parrucchieri, calendari e prenotazioni'
+        },
+        servers: [
+            { url: `http://localhost:${PORT}` }
+        ]
+    },
+    apis: ['./app.js'] // Cambia con il percorso corretto se necessario
+};
+
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Connessione al database SQLite
 const db = new sqlite3.Database('database.db', (err) => {
@@ -90,7 +111,45 @@ const db = new sqlite3.Database('database.db', (err) => {
     }
 });
 
-
+/**
+ * @swagger
+ * /parrucchieri:
+ *   post:
+ *     summary: Registra un nuovo parrucchiere
+ *     description: Aggiungi un nuovo parrucchiere al sistema, includendo tutte le informazioni richieste.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               nome:
+ *                 type: string
+ *               cognome:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               telefono:
+ *                 type: string
+ *               nome_salone:
+ *                 type: string
+ *               indirizzo:
+ *                 type: string
+ *               servizi_offerti:
+ *                 type: string
+ *               pass:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Parrucchiere registrato con successo
+ *       400:
+ *         description: Dati mancanti o username già in uso
+ *       500:
+ *         description: Errore durante la creazione del parrucchiere
+ */
 app.post('/parrucchieri', (req, res) => {
     const { username, nome, cognome, email, telefono, nome_salone, indirizzo, servizi_offerti, pass } = req.body;
 
@@ -129,7 +188,31 @@ app.post('/parrucchieri', (req, res) => {
     });
 });
 
-
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Effettua il login di un utente o parrucchiere
+ *     description: Autentica un utente o un parrucchiere utilizzando username e password.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               pass:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Login effettuato con successo
+ *       401:
+ *         description: Credenziali non valide
+ *       500:
+ *         description: Errore durante l'autenticazione
+ */
 // Route per il login
 app.post('/login', (req, res) => {
     const { username, pass } = req.body;
@@ -228,7 +311,35 @@ app.post('/utenti', (req, res) => {
     });
 });
 
-
+/**
+ * @swagger
+ * /calendari:
+ *   post:
+ *     summary: Crea un calendario per un parrucchiere
+ *     description: Crea un nuovo calendario per un parrucchiere esistente, includendo un nome e una descrizione.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nome:
+ *                 type: string
+ *               descrizione:
+ *                 type: string
+ *               parrucchiere_id:
+ *                 type: integer
+ *     responses:
+ *       201:
+ *         description: Calendario creato con successo
+ *       400:
+ *         description: Dati mancanti o errore nella creazione
+ *       404:
+ *         description: Parrucchiere non trovato
+ *       500:
+ *         description: Errore durante la creazione del calendario
+ */
 // Route per creare un calendario per un parrucchiere
 app.post('/calendari', (req, res) => {
     const { nome, descrizione, parrucchiere_id } = req.body; // Modificato a parrucchiere_id
@@ -259,7 +370,33 @@ app.post('/calendari', (req, res) => {
     });
 });
 
-
+/**
+ * @swagger
+ * /prenotazione:
+ *   post:
+ *     summary: Crea una prenotazione per un calendario
+ *     description: Permette di creare una prenotazione specificando la data e l'ora per un determinato calendario.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               calendario_id:
+ *                 type: integer
+ *               date:
+ *                 type: string
+ *               time:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Prenotazione completata con successo
+ *       400:
+ *         description: Dati mancanti o prenotazione già esistente
+ *       500:
+ *         description: Errore durante la creazione della prenotazione
+ */
 // Route per creare una prenotazione in un calendario
 app.post('/prenotazione', (req, res) => {
     const { calendario_id, date, time } = req.body;
@@ -340,6 +477,27 @@ app.get('/calendari', (req, res) => {
         res.status(200).json(rows);
     });
 });
+/**
+ * @swagger
+ * /parrucchieri/servizio/{servizio}:
+ *   get:
+ *     summary: Restituisce i parrucchieri che offrono un servizio specifico
+ *     description: Recupera una lista di parrucchieri che offrono un determinato servizio.
+ *     parameters:
+ *       - in: path
+ *         name: servizio
+ *         required: true
+ *         description: Il servizio che si desidera cercare.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lista dei parrucchieri che offrono il servizio richiesto
+ *       404:
+ *         description: Nessun parrucchiere trovato per il servizio specificato
+ *       500:
+ *         description: Errore durante la ricerca dei parrucchieri
+ */
 app.get('/parrucchieri/servizio/:servizio', (req, res) => {
     const servizio = req.params.servizio;
 
@@ -369,6 +527,25 @@ app.get('/utenti/:id', (req, res) => {
         res.status(200).json(rows);
     });
 });
+// Ottieni tutti i parrucchieri
+app.get('/parrucchieri', (req, res) => {
+    db.all(`SELECT * FROM parrucchieri`, [], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ message: 'Errore durante la lettura dei parrucchieri' });
+        }
+        res.status(200).json(rows);
+    });
+});
+
+// Ottieni solo parrucchieri che offrono il servizio di "colore"
+app.get('/parrucchieri/colore', (req, res) => {
+    db.all(`SELECT * FROM parrucchieri WHERE servizi_offerti LIKE '%colore%'`, [], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ message: 'Errore durante la lettura dei parrucchieri' });
+        }
+        res.status(200).json(rows);
+    });
+}); 
 
 
 // Avvio del server

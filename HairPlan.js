@@ -546,6 +546,21 @@ app.get('/parrucchieri/colore', (req, res) => {
         res.status(200).json(rows);
     });
 }); 
+// Endpoint per eliminare un parrucchiere
+app.delete('/parrucchieri/:id', (req, res) => {
+    const parrucchiereId = req.params.id;
+  
+    db.run('DELETE FROM parrucchieri WHERE id = ?', [parrucchiereId], function(err) {
+      if (err) {
+        return res.status(500).json({ error: 'Errore nell\'eliminazione del parrucchiere' });
+      }
+      if (this.changes === 0) {
+        return res.status(404).json({ error: 'Parrucchiere non trovato' });
+      }
+      res.status(200).json({ message: 'Parrucchiere eliminato con successo' });
+    });
+  });
+  
 
 
 // Avvio del server

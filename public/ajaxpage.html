@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista Parrucchieri</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Lista Parrucchieri</h1>
+    <button id="load-all-parrucchieri">Carica Tutti i Parrucchieri</button>
+    <br>
+    <label for="filter-servizi">Filtra per Servizi:</label>
+    <input type="text" id="filter-servizi" placeholder="Esempio: taglio, shampoo">
+    <button id="load-filtered-parrucchieri">Carica Parrucchieri Filtrati</button>
+
+    <div id="parrucchiere-list">
+        <!-- La lista dei parrucchieri sarà inserita qui -->
+    </div>
+
+    <script>
+        // Funzione per caricare tutti i parrucchieri
+        $('#load-all-parrucchieri').click(function() {
+            $.ajax({
+                url: '/api/parrucchieri',
+                method: 'GET',
+                success: function(data) {
+                    $('#parrucchiere-list').empty();  // Svuota la lista esistente
+                    data.forEach(function(parrucchiere) {
+                        $('#parrucchiere-list').append('<p>' + parrucchiere.nome_salone + ' - ' + parrucchiere.servizi_offerti + '</p>');
+                    });
+                },
+                error: function(err) {
+                    alert('Errore nel caricamento dei parrucchieri');
+                }
+            });
+        });
+
+        // Funzione per caricare i parrucchieri filtrati per servizi
+        $('#load-filtered-parrucchieri').click(function() {
+            const servizi = $('#filter-servizi').val();
+            $.ajax({
+                url: '/api/parrucchieri/filtrati',
+                method: 'GET',
+                data: { servizi: servizi },
+                success: function(data) {
+                    $('#parrucchiere-list').empty();  // Svuota la lista esistente
+                    data.forEach(function(parrucchiere) {
+                        $('#parrucchiere-list').append('<p>' + parrucchiere.nome_salone + ' - ' + parrucchiere.servizi_offerti + '</p>');
+                    });
+                },
+                error: function(err) {
+                    alert('Errore nel caricamento dei parrucchieri filtrati');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

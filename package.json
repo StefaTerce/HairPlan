@@ -1,11 +1,18 @@
 {
   "dependencies": {
+    "@fullcalendar/core": "^6.1.15",
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/interaction": "^6.1.15",
+    "@fullcalendar/timegrid": "^6.1.15",
+    "axios": "^1.7.9",
     "body-parser": "^1.20.3",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-handlebars": "^8.0.1",
     "express-session": "^1.18.1",
     "handlebars": "^4.7.8",
     "hbs": "^4.2.0",
+    "socket.io": "^4.8.1",
     "sqlite3": "^5.1.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"

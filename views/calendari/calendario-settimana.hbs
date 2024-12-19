@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario - {{username}}</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>Calendario settimanale</h1>
+        <a href="/utente/home" class="back-btn">Torna ai calendari</a>
+        <p>Benvenuto, {{username}}</p>
+        <p>Settimana: {{settimana}}</p>
+    </header>
+    <main>
+        <div class="calendario">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ora</th>
+                        {{#each giorni}}
+                        <th class="giorno">{{this}}</th>
+                        {{/each}}
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each ore}}
+                    <tr>
+                        <td>{{this}}</td>
+                        {{#each ../giorni}}
+                        <td id="slot-{{this}}-{{../../this}}">
+                            <!-- Se esiste un appuntamento, mostralo -->
+                            {{#each ../appuntamenti}}
+                            {{#if (and (eq this.giorno ../../this) (eq this.ora ../this))}}
+                            <div class="appuntamento">
+                                <p><strong>{{this.utente}}</strong></p>
+                                <p>{{this.descrizione}}</p>
+                            </div>
+                            {{/if}}
+                            {{/each}}
+                            <!-- Bottone per aggiungere un appuntamento -->
+                           <button class="prenota-btn" onclick="aggiungiNota('{{this}}', '{{../this}}')">+ Aggiungi</button>
+
+                        </td>
+                        {{/each}}
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+<!-- Modale per aggiungere una nota -->
+<div id="modalNota" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close" onclick="chiudiModale()">&times;</span>
+        <h2>Aggiungi una nota</h2>
+        <form id="notaForm">
+            <label for="giorno">Giorno:</label>
+            <input type="text" id="giorno" name="giorno" readonly><br>
+            <label for="ora">Ora:</label>
+            <input type="text" id="ora" name="ora" readonly><br>
+            <label for="descrizione">Descrizione:</label>
+            <textarea id="descrizione" name="descrizione" rows="3" required></textarea><br>
+            <button type="button" onclick="salvaNota()">Salva</button>
+        </form>
+    </div>
+</div>
+
+
+
+</body>
+
+<script>
+// Funzione per aprire il modale e visualizzare la data e l'ora
+function aggiungiNota(giorno, ora) {
+    console.log('Giorno selezionato:', giorno); // Verifica che venga passato correttamente come stringa
+
+    // Calcolare la data effettiva per il giorno selezionato (esempio: "Lunedì", "Martedì", ecc.)
+    const oggi = new Date();
+    const giorniSettimana = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
+    
+    // Verifica e standardizza il formato del giorno passato (assicurati che sia corretto)
+    giorno = giorno.trim().substring(0, 3); // Assicuriamoci che "Lun", "Mar", ecc. siano formattati correttamente
+    console.log('Giorno formattato:', giorno); // Log del giorno formattato
+
+    const giornoIndex = giorniSettimana.indexOf(giorno); // Trova l'indice del giorno della settimana
+    console.log('Giorno index:', giornoIndex); // Log dell'indice
+
+    if (giornoIndex !== -1) {
+        // Calcola la differenza tra oggi e il giorno selezionato
+        const giornoSelezionato = new Date(oggi);
+        const diff = giornoIndex - oggi.getDay();
+        giornoSelezionato.setDate(oggi.getDate() + diff); // Imposta la data al giorno selezionato
+
+        // Ottieni la data formattata (yyyy-mm-dd)
+        const dataFormattata = giornoSelezionato.toISOString().split('T')[0];
+        console.log('Data formattata:', dataFormattata);
+        
+        // Imposta il valore nel modale
+        document.getElementById('giorno').value = dataFormattata; // Imposta il campo giorno
+    }
+    
+    // Imposta l'ora selezionata
+    document.getElementById('ora').value = ora;
+    
+    // Mostra il modale
+    document.getElementById('modalNota').style.display = 'block';
+}
+
+// Funzione per chiudere il modale
+function chiudiModale() {
+    document.getElementById('modalNota').style.display = 'none';
+}
+
+function salvaNota() {
+    const giorno = document.getElementById('giorno').value;
+    const ora = document.getElementById('ora').value;
+    const descrizione = document.getElementById('descrizione').value;
+    const username = 'utente'; // Sostituisci con l'utente loggato
+
+    if (descrizione) {
+        // 1. Aggiungi l'appuntamento al MockDB
+        prenotaAppuntamento(username, giorno, ora, descrizione);
+
+        // 2. Aggiorna la UI per mostrare l'appuntamento
+        aggiornaSlot(giorno, ora, descrizione);
+
+        // 3. Chiudi il modale
+        chiudiModale();
+    } else {
+        alert('Per favore, inserisci una descrizione!');
+    }
+}
+
+
+// Funzione per aggiornare lo slot nella tabella
+function aggiornaSlot(giorno, ora, descrizione) {
+    const slotId = `slot-${giorno}-${ora}`;
+    const slot = document.getElementById(slotId);
+
+    if (slot) {
+        slot.innerHTML = `
+            <div class="appuntamento">
+                <p><strong>${'utente'}</strong></p> <!-- Inserisci il nome dell'utente qui -->
+                <p>${descrizione}</p>
+            </div>
+        `;
+    }
+}
+
+function prenotaAppuntamento(username, giorno, ora, descrizione) {
+    // Ottieni il parrucchiere
+    const parrucchiere = 'parrucchiere'; // Usa il nome dell'utente loggato
+
+    // Crea l'appuntamento nel MockDB
+    mockDB.addAppointment(parrucchiere, {
+        id: Date.now(),  // Usa un ID unico per l'appuntamento
+        giorno: giorno,
+        ora: ora,
+        descrizione: descrizione,
+        utente: username
+    });
+
+    // Aggiungi l'appuntamento al calendario del parrucchiere
+    mockDB.prenotaSlot(parrucchiere, giorno, ora, descrizione, { username: username });
+
+    console.log(`Appuntamento aggiunto per ${giorno} alle ${ora}: ${descrizione}`);
+}
+
+
+
+</script>
+
+<style>
+.calendario {
+    margin: 20px auto;
+    width: 90%;
+    max-width: 800px;
+    border-collapse: collapse;
+}
+
+table {
+    width: 100%;
+    border: 1px solid #ddd;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+.prenota-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.prenota-btn:hover {
+    background-color: #0056b3;
+}
+
+.appuntamento {
+    background-color: #dff0d8;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+/* Stile del modale */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.back-btn {
+    display: inline-block;
+    margin: 10px 0;
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.back-btn:hover {
+    background-color: #0056b3;
+}
+</style>
+
+</html>

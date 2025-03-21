@@ -8,7 +8,6 @@
    git clone https://github.com/StefaTerce/HairPlan.git
    cd HairPlan
 
-
 2. **Installare le Dipendenze:**
    Assicurati di avere Node.js installato e poi esegui:
    ```bash

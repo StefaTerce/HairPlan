@@ -1,34 +1,48 @@
 <!DOCTYPE html>
 <html lang="it">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Parrucchiere</title>
     <link rel="stylesheet" href="/static/css/styles.css">
 </head>
-
 <body>
     <!-- Cerchio per mostrare le informazioni dell'utente -->
     <div class="profile-icon" onclick="toggleProfileInfo()">
-        <span>{{firstLetter name}}</span> <!-- Usa il helper per ottenere la prima lettera del nome -->
+        <span>{{firstLetter name}}</span>
     </div>
 
-    <!-- Menu o informazioni dell'utente (nascosto inizialmente) -->
+    <!-- Informazioni utente -->
     <div id="profileInfo" class="profile-info">
         <p><strong>Nome:</strong> {{name}}</p>
         <p><strong>Ruolo:</strong> {{role}}</p>
         <a href="/logout" class="logout-btn">Logout</a>
     </div>
+
     <header>
         <h1>{{message}}</h1>
     </header>
     <main>
         <p>Benvenuto Parrucchiere, {{name}}!</p>
+        <!-- Contatore visitatori in tempo reale -->
+        <div id="visitorCount" class="text-center mb-4">Visitatori online: 0</div>
     </main>
-</body>
 
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        socket.on('visitorCount', (count) => {
+            document.getElementById('visitorCount').innerText = 'Visitatori online: ' + count;
+        });
+
+        function toggleProfileInfo() {
+            const profileInfo = document.getElementById('profileInfo');
+            profileInfo.style.display = profileInfo.style.display === 'none' || profileInfo.style.display === '' ? 'block' : 'none';
+        }
+    </script>
+</body>
 </html>
+
 <style>
     /* Stile per il cerchio in alto a destra */
     .profile-icon {
@@ -77,11 +91,3 @@
         background-color: #c0392b;
     }
 </style>
-
-<script>
-    // Funzione per mostrare/nascondere le informazioni del profilo
-    function toggleProfileInfo() {
-        const profileInfo = document.getElementById('profileInfo');
-        profileInfo.style.display = profileInfo.style.display === 'none' || profileInfo.style.display === '' ? 'block' : 'none';
-    }
-</script>

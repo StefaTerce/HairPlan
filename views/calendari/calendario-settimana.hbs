@@ -1,267 +1,270 @@
 <!DOCTYPE html>
 <html lang="it">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendario - {{username}}</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendario - {{username}}</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    header {
+      background-color: #343a40;
+      color: #fff;
+      padding: 1rem 0;
+      margin-bottom: 1.5rem;
+    }
+    header h1 {
+      font-size: 2rem;
+    }
+    .back-btn {
+      color: #343a40;
+      background-color: #ffc107;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .back-btn:hover {
+      background-color: #e0a800;
+      color: #fff;
+    }
+    .calendar-table th, .calendar-table td {
+      vertical-align: middle;
+      text-align: center;
+    }
+    .calendar-table .slot {
+      cursor: pointer;
+      transition: background-color 0.3s;
+      min-height: 80px;
+    }
+    .calendar-table .slot:hover {
+      background-color: #e9ecef;
+    }
+    .appointment {
+      background-color: #d4edda;
+      padding: 0.3rem;
+      border-radius: 5px;
+      font-size: 0.9rem;
+      margin-bottom: 0.3rem;
+    }
+  </style>
 </head>
-
 <body>
-    <header>
-        <h1>Calendario settimanale</h1>
-        <a href="/utente/home" class="back-btn">Torna ai calendari</a>
-        <p>Benvenuto, {{username}}</p>
-        <p>Settimana: {{settimana}}</p>
-    </header>
-    <main>
-        <div class="calendario">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Ora</th>
-                        {{#each giorni}}
-                        <th class="giorno">{{this}}</th>
-                        {{/each}}
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each ore}}
-                    <tr>
-                        <td>{{this}}</td>
-                        {{#each ../giorni}}
-                        <td id="slot-{{this}}-{{../../this}}">
-                            <!-- Se esiste un appuntamento, mostralo -->
-                            {{#each ../appuntamenti}}
-                            {{#if (and (eq this.giorno ../../this) (eq this.ora ../this))}}
-                            <div class="appuntamento">
-                                <p><strong>{{this.utente}}</strong></p>
-                                <p>{{this.descrizione}}</p>
-                            </div>
-                            {{/if}}
-                            {{/each}}
-                            <!-- Bottone per aggiungere un appuntamento -->
-                           <button class="prenota-btn" onclick="aggiungiNota('{{this}}', '{{../this}}')">+ Aggiungi</button>
-
-                        </td>
-                        {{/each}}
-                    </tr>
-                    {{/each}}
-                </tbody>
-            </table>
-        </div>
-    </main>
-
-<!-- Modale per aggiungere una nota -->
-<div id="modalNota" class="modal" style="display:none;">
-    <div class="modal-content">
-        <span class="close" onclick="chiudiModale()">&times;</span>
-        <h2>Aggiungi una nota</h2>
-        <form id="notaForm">
-            <label for="giorno">Giorno:</label>
-            <input type="text" id="giorno" name="giorno" readonly><br>
-            <label for="ora">Ora:</label>
-            <input type="text" id="ora" name="ora" readonly><br>
-            <label for="descrizione">Descrizione:</label>
-            <textarea id="descrizione" name="descrizione" rows="3" required></textarea><br>
-            <button type="button" onclick="salvaNota()">Salva</button>
-        </form>
+  <!-- Header -->
+  <header>
+    <div class="container d-flex justify-content-between align-items-center">
+      <h1>Calendario Settimanale</h1>
+      <a href="/utente/home" class="back-btn">Torna alla home</a>
     </div>
-</div>
+    <div class="container">
+      <p class="mb-0">Benvenuto, {{username}}</p>
+      <!-- La settimana verrà calcolata dinamicamente -->
+      <p id="weekRange"></p>
+    </div>
+  </header>
 
+  <!-- Navigazione tra le settimane -->
+  <div class="container mb-3">
+    <div class="d-flex justify-content-between">
+      <button id="prevWeek" class="btn btn-outline-primary">Settimana Precedente</button>
+      <button id="nextWeek" class="btn btn-outline-primary">Settimana Successiva</button>
+    </div>
+  </div>
 
+  <!-- Calendario -->
+  <main class="container">
+    <div class="table-responsive">
+      <table class="table table-bordered calendar-table">
+        <thead class="table-light" id="calendarHeader">
+          <!-- L'header verrà generato dinamicamente -->
+        </thead>
+        <tbody id="calendarBody">
+          <!-- Il corpo della tabella verrà generato dinamicamente -->
+        </tbody>
+      </table>
+    </div>
+  </main>
 
-</body>
-
-<script>
-// Funzione per aprire il modale e visualizzare la data e l'ora
-function aggiungiNota(giorno, ora) {
-    console.log('Giorno selezionato:', giorno); // Verifica che venga passato correttamente come stringa
-
-    // Calcolare la data effettiva per il giorno selezionato (esempio: "Lunedì", "Martedì", ecc.)
-    const oggi = new Date();
-    const giorniSettimana = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
-    
-    // Verifica e standardizza il formato del giorno passato (assicurati che sia corretto)
-    giorno = giorno.trim().substring(0, 3); // Assicuriamoci che "Lun", "Mar", ecc. siano formattati correttamente
-    console.log('Giorno formattato:', giorno); // Log del giorno formattato
-
-    const giornoIndex = giorniSettimana.indexOf(giorno); // Trova l'indice del giorno della settimana
-    console.log('Giorno index:', giornoIndex); // Log dell'indice
-
-    if (giornoIndex !== -1) {
-        // Calcola la differenza tra oggi e il giorno selezionato
-        const giornoSelezionato = new Date(oggi);
-        const diff = giornoIndex - oggi.getDay();
-        giornoSelezionato.setDate(oggi.getDate() + diff); // Imposta la data al giorno selezionato
-
-        // Ottieni la data formattata (yyyy-mm-dd)
-        const dataFormattata = giornoSelezionato.toISOString().split('T')[0];
-        console.log('Data formattata:', dataFormattata);
-        
-        // Imposta il valore nel modale
-        document.getElementById('giorno').value = dataFormattata; // Imposta il campo giorno
-    }
-    
-    // Imposta l'ora selezionata
-    document.getElementById('ora').value = ora;
-    
-    // Mostra il modale
-    document.getElementById('modalNota').style.display = 'block';
-}
-
-// Funzione per chiudere il modale
-function chiudiModale() {
-    document.getElementById('modalNota').style.display = 'none';
-}
-
-function salvaNota() {
-    const giorno = document.getElementById('giorno').value;
-    const ora = document.getElementById('ora').value;
-    const descrizione = document.getElementById('descrizione').value;
-    const username = 'utente'; // Sostituisci con l'utente loggato
-
-    if (descrizione) {
-        // 1. Aggiungi l'appuntamento al MockDB
-        prenotaAppuntamento(username, giorno, ora, descrizione);
-
-        // 2. Aggiorna la UI per mostrare l'appuntamento
-        aggiornaSlot(giorno, ora, descrizione);
-
-        // 3. Chiudi il modale
-        chiudiModale();
-    } else {
-        alert('Per favore, inserisci una descrizione!');
-    }
-}
-
-
-// Funzione per aggiornare lo slot nella tabella
-function aggiornaSlot(giorno, ora, descrizione) {
-    const slotId = `slot-${giorno}-${ora}`;
-    const slot = document.getElementById(slotId);
-
-    if (slot) {
-        slot.innerHTML = `
-            <div class="appuntamento">
-                <p><strong>${'utente'}</strong></p> <!-- Inserisci il nome dell'utente qui -->
-                <p>${descrizione}</p>
+  <!-- Modal per la prenotazione -->
+  <div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="appointmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="appointmentModalLabel">Prenota Appuntamento</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+        </div>
+        <div class="modal-body">
+          <form id="appointmentForm">
+            <div class="mb-3">
+              <label for="modalDate" class="form-label">Data</label>
+              <input type="text" class="form-control" id="modalDate" name="data" readonly>
             </div>
-        `;
+            <div class="mb-3">
+              <label for="modalTime" class="form-label">Ora</label>
+              <input type="text" class="form-control" id="modalTime" name="ora" readonly>
+            </div>
+            <div class="mb-3">
+              <label for="modalDescription" class="form-label">Descrizione</label>
+              <textarea class="form-control" id="modalDescription" name="descrizione" rows="3" required></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+          <button type="button" class="btn btn-primary" onclick="saveAppointment()">Salva</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Socket.io (opzionale, per aggiornamenti in tempo reale) -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    // Variabili per la settimana corrente
+    let currentDate = new Date();
+    // Funzione per calcolare il lunedì e la domenica della settimana in base a una data
+    function getWeekRange(date) {
+      const currentDay = date.getDay(); // 0 (Domenica) - 6 (Sabato)
+      // Consideriamo la settimana da lunedì a domenica:
+      const diffToMonday = (currentDay === 0 ? -6 : 1 - currentDay);
+      const diffToSunday = (currentDay === 0 ? 0 : 7 - currentDay);
+      const monday = new Date(date);
+      monday.setDate(date.getDate() + diffToMonday);
+      const sunday = new Date(date);
+      sunday.setDate(date.getDate() + diffToSunday);
+      return { monday, sunday };
     }
-}
 
-function prenotaAppuntamento(username, giorno, ora, descrizione) {
-    // Ottieni il parrucchiere
-    const parrucchiere = 'parrucchiere'; // Usa il nome dell'utente loggato
+    // Funzione per formattare una data (es. 2025-03-20)
+    function formatDate(date) {
+      return date.toISOString().split('T')[0];
+    }
 
-    // Crea l'appuntamento nel MockDB
-    mockDB.addAppointment(parrucchiere, {
-        id: Date.now(),  // Usa un ID unico per l'appuntamento
-        giorno: giorno,
-        ora: ora,
-        descrizione: descrizione,
-        utente: username
+    // Aggiorna l'intestazione del calendario con i nomi dei giorni e le date
+    function renderCalendarHeader(weekDays) {
+      const header = document.getElementById('calendarHeader');
+      header.innerHTML = '';
+      const row = document.createElement('tr');
+      const thTime = document.createElement('th');
+      thTime.innerText = 'Ora';
+      row.appendChild(thTime);
+      weekDays.forEach(day => {
+        const th = document.createElement('th');
+        th.innerHTML = `<div>${day.name}</div><div style="font-size:0.9rem;">${day.date}</div>`;
+        row.appendChild(th);
+      });
+      header.appendChild(row);
+    }
+
+    // Renderizza il corpo del calendario (ore e slot)
+    function renderCalendarBody(weekDays, ore) {
+      const body = document.getElementById('calendarBody');
+      body.innerHTML = '';
+      ore.forEach(time => {
+        const row = document.createElement('tr');
+        const tdTime = document.createElement('td');
+        tdTime.innerText = time;
+        row.appendChild(tdTime);
+        weekDays.forEach(day => {
+          const td = document.createElement('td');
+          td.classList.add('slot');
+          // Imposta un id nello slot: ad esempio "slot-2025-03-20-08:00"
+          td.id = `slot-${day.date}-${time}`;
+          // Se ci sono appuntamenti per questo slot, verranno inseriti lato server
+          // Qui potresti caricare dinamicamente gli appuntamenti se implementi una chiamata AJAX
+          // Al click, apri il modal passando data e ora
+          td.addEventListener('click', () => openModal(day.date, time));
+          row.appendChild(td);
+        });
+        body.appendChild(row);
+      });
+    }
+
+    // Funzione per aggiornare la vista della settimana
+    function renderWeek() {
+      const { monday, sunday } = getWeekRange(currentDate);
+      // Calcola un array con 7 giorni (dal lunedì alla domenica)
+      const weekDays = [];
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(monday);
+        d.setDate(monday.getDate() + i);
+        const options = { weekday: 'long' };
+        const dayName = d.toLocaleDateString('it-IT', options);
+        weekDays.push({
+          name: dayName.charAt(0).toUpperCase() + dayName.slice(1),
+          date: formatDate(d)
+        });
+      }
+      // Aggiorna l'intestazione con il range
+      document.getElementById('weekRange').innerText = `Settimana: ${formatDate(monday)} - ${formatDate(sunday)}`;
+      renderCalendarHeader(weekDays);
+      // Definisci le ore (puoi modificarle in base alle esigenze)
+      const ore = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00'];
+      renderCalendarBody(weekDays, ore);
+    }
+
+    // Inizializza la vista della settimana corrente
+    renderWeek();
+
+    // Gestione dei bottoni per navigare tra le settimane
+    document.getElementById('prevWeek').addEventListener('click', () => {
+      currentDate.setDate(currentDate.getDate() - 7);
+      renderWeek();
+    });
+    document.getElementById('nextWeek').addEventListener('click', () => {
+      currentDate.setDate(currentDate.getDate() + 7);
+      renderWeek();
     });
 
-    // Aggiungi l'appuntamento al calendario del parrucchiere
-    mockDB.prenotaSlot(parrucchiere, giorno, ora, descrizione, { username: username });
+    // Variabile per tenere traccia dello slot selezionato nel modal
+    let selectedSlot = {};
 
-    console.log(`Appuntamento aggiunto per ${giorno} alle ${ora}: ${descrizione}`);
-}
+    // Apri il modal e imposta la data e l'ora selezionate
+    function openModal(data, time) {
+      selectedSlot = { data, time };
+      document.getElementById('modalDate').value = data;
+      document.getElementById('modalTime').value = time;
+      document.getElementById('modalDescription').value = '';
+      var modal = new bootstrap.Modal(document.getElementById('appointmentModal'));
+      modal.show();
+    }
 
+    // Salva la prenotazione (invia una POST)
+    async function saveAppointment() {
+      const data = document.getElementById('modalDate').value;
+      const time = document.getElementById('modalTime').value;
+      const descrizione = document.getElementById('modalDescription').value;
+      try {
+        // Esegui la POST sull'endpoint per il calendario
+        const response = await fetch(window.location.pathname + '/appuntamento', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ giorno: data, ora: time, descrizione })
+        });
+        const result = await response.json();
+        if (result.success) {
+          // Se salvato, ricarica la pagina per aggiornare il calendario
+          location.reload();
+        } else {
+          alert(result.message || 'Errore nella prenotazione.');
+        }
+      } catch (error) {
+        console.error('Errore:', error);
+      }
+    }
 
-
-</script>
-
-<style>
-.calendario {
-    margin: 20px auto;
-    width: 90%;
-    max-width: 800px;
-    border-collapse: collapse;
-}
-
-table {
-    width: 100%;
-    border: 1px solid #ddd;
-}
-
-th, td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-}
-
-th {
-    background-color: #f4f4f4;
-}
-
-.prenota-btn {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.prenota-btn:hover {
-    background-color: #0056b3;
-}
-
-.appuntamento {
-    background-color: #dff0d8;
-    padding: 5px;
-    border-radius: 5px;
-}
-
-/* Stile del modale */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 400px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    position: relative;
-}
-
-.close {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 18px;
-    cursor: pointer;
-}
-
-.back-btn {
-    display: inline-block;
-    margin: 10px 0;
-    padding: 8px 15px;
-    background-color: #007bff;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.back-btn:hover {
-    background-color: #0056b3;
-}
-</style>
-
+    // Integrazione Socket.io (opzionale) per aggiornamenti in tempo reale
+    const socket = io();
+    socket.on('appointmentUpdated', data => {
+      // Se l'evento riguarda questo parrucchiere, ricarica il calendario
+      location.reload();
+    });
+  </script>
+</body>
 </html>

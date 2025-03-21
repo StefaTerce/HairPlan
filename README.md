@@ -133,11 +133,6 @@ Questi utenti vengono creati automaticamente nel database al momento dell'inizia
    ```
 5. Apri una Pull Request su GitHub.
 
-## Licenza
-
-Distribuito sotto licenza MIT. Vedi il file [LICENSE](LICENSE) per maggiori dettagli.
-```
-
 ![image](https://github.com/user-attachments/assets/b24eab1e-dff5-4a57-b140-5585f9dc42bf)
 
 

@@ -133,7 +133,7 @@ Questi utenti vengono creati automaticamente nel database al momento dell'inizia
    ```
 5. Apri una Pull Request su GitHub.
 
-![image](https://github.com/user-attachments/assets/b24eab1e-dff5-4a57-b140-5585f9dc42bf)
+![image](https://github.com/user-attachments/assets/633bd888-184d-41fe-a3e4-a8ec84c2789b)
 
 
 

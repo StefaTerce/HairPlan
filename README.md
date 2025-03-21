@@ -1,4 +1,3 @@
-```markdown
 # HairPlan
 
 ## Descrizione
@@ -78,7 +77,7 @@ Questi utenti vengono creati automaticamente nel database al momento dell'inizia
    ```bash
    git clone https://github.com/StefaTerce/HairPlan.git
    cd HairPlan
-   ```
+
 
 2. **Installare le Dipendenze:**
    Assicurati di avere Node.js installato e poi esegui:

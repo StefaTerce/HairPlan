@@ -1,4 +1,38 @@
 # HairPlan
+## Setup e Configurazione
+
+### Configurazione del Progetto su GitHub
+
+1. **Clonare il Repository:**
+   ```bash
+   git clone https://github.com/StefaTerce/HairPlan.git
+   cd HairPlan
+
+
+2. **Installare le Dipendenze:**
+   Assicurati di avere Node.js installato e poi esegui:
+   ```bash
+   npm install
+   ```
+
+3. **Configurare le Variabili d'Ambiente:**
+   Crea un file `.env` nella radice del progetto e inserisci le variabili necessarie, ad esempio:
+   ```env
+   PORT=3000
+   GOOGLE_CLIENT_ID=your_google_client_id
+   GOOGLE_CLIENT_SECRET=your_google_client_secret
+   ```
+   Nel caso di SQLite, il file di database (es. `hairplan.db`) verrà creato automaticamente (vedi `db.js`).
+
+4. **Avviare il Server:**
+   Per avviare l'applicazione, esegui:
+   ```bash
+   npm start
+   ```
+   oppure:
+   ```bash
+   node app.js
+   ```
 
 ## Descrizione
 
@@ -69,41 +103,6 @@ Per facilitare il testing e i login, il database è preconfigurato con i seguent
 
 Questi utenti vengono creati automaticamente nel database al momento dell'inizializzazione (vedi il file `db.js`).
 
-## Setup e Configurazione
-
-### Configurazione del Progetto su GitHub
-
-1. **Clonare il Repository:**
-   ```bash
-   git clone https://github.com/StefaTerce/HairPlan.git
-   cd HairPlan
-
-
-2. **Installare le Dipendenze:**
-   Assicurati di avere Node.js installato e poi esegui:
-   ```bash
-   npm install
-   ```
-
-3. **Configurare le Variabili d'Ambiente:**
-   Crea un file `.env` nella radice del progetto e inserisci le variabili necessarie, ad esempio:
-   ```env
-   PORT=3000
-   GOOGLE_CLIENT_ID=your_google_client_id
-   GOOGLE_CLIENT_SECRET=your_google_client_secret
-   NEWS_API_KEY=your_news_api_key
-   ```
-   Nel caso di SQLite, il file di database (es. `hairplan.db`) verrà creato automaticamente (vedi `db.js`).
-
-4. **Avviare il Server:**
-   Per avviare l'applicazione, esegui:
-   ```bash
-   npm start
-   ```
-   oppure:
-   ```bash
-   node app.js
-   ```
 
 ## Struttura del Progetto
 

@@ -1,123 +1,143 @@
+```markdown
 # HairPlan
 
 ## Descrizione
 
-HairPlan è un'applicazione progettata per la gestione delle prenotazioni nei saloni di parrucchiere. La piattaforma consente ai clienti di prenotare appuntamenti, visualizzare i servizi disponibili e ai saloni di organizzare e gestire i propri calendari. L'obiettivo di HairPlan è migliorare l'efficienza nella gestione delle prenotazioni per i saloni e semplificare l'esperienza di prenotazione per i clienti.
+HairPlan è un'applicazione per la gestione delle prenotazioni nei saloni di parrucchiere. La piattaforma consente ai clienti di prenotare appuntamenti e ai saloni di organizzare il proprio calendario, migliorando l'efficienza e semplificando l'esperienza di prenotazione.
 
 ## Tag Line
+
 Il modo più semplice per gestire le tue prenotazioni in salone.
 
 ## Target
 
-Clienti che desiderano prenotare servizi presso i saloni di parrucchiere
-Saloni di parrucchiere che cercano una soluzione per gestire in modo efficace le proprie prenotazioni
-Problema
-HairPlan risolve le problematiche legate alla gestione delle prenotazioni nei saloni, minimizzando sovrapposizioni e facilitando la prenotazione per i clienti.
+- Clienti che desiderano prenotare servizi presso saloni di parrucchiere.
+- Saloni di parrucchiere che cercano una soluzione efficace per la gestione delle prenotazioni.
+
+## Problema
+
+HairPlan risolve le problematiche legate alla gestione e organizzazione delle prenotazioni, minimizzando sovrapposizioni e facilitando il processo sia per i clienti che per i saloni.
 
 ## Competitor
 
-- SimplyBook.me
-
-- Calendly
-
-- Book Like a Boss
-
-- Picktime
-
+- SimplyBook.me  
+- Calendly  
+- Book Like a Boss  
+- Picktime  
 - Doodle
 
+## Requisiti Iniziali
 
-## Problema
-HairPlan risolve il problema della gestione e organizzazione delle prenotazioni nei saloni di parrucchiere, facilitando la prenotazione per i clienti e l’organizzazione per i gestori del salone.
+### Creazione di Profilo
 
-## Requisti Iniziali
+- **Cliente:** Nome, cognome, email e numero di telefono.
+- **Parrucchiere:** Nome, cognome, email, numero di telefono, nome del salone, indirizzo e servizi offerti.
 
+## Funzionalità API Principali
 
-### Sito Web e Creazione di Profilo
+- **Autenticazione:**  
+  - `POST /login` – Login (imposta in sessione `username`, `name` e `role`).
+  - `POST /register` – Registrazione di un nuovo utente (ruolo predefinito `utente`).
+  - `GET /logout` – Logout.
 
-Profilo Cliente: Include nome, cognome, email e numero di telefono per gestire le prenotazioni e la comunicazione con il salone.
+- **Gestione Utenti:**  
+  - `GET /api/parrucchieri` – Elenco di tutti i parrucchieri.
+  - `GET /api/parrucchieri/filtrati` – Elenco dei parrucchieri filtrati per servizi.
 
-Profilo Parrucchiere: Contiene Include nome, cognome, email , numero di telefono, nome del salone, indirizzo, servizi offerti.
-Interfaccia Utente
+- **Calendario e Prenotazioni:**  
+  - `GET /utente/calendario/:parrucchiere` – Visualizza il calendario settimanale per un parrucchiere; consente la navigazione tra settimane.
+  - `POST /utente/calendario/:parrucchiere/appuntamento` – Prenotazione di uno slot nel calendario (invia data, ora e descrizione).
+  - `DELETE /utente/calendario/:parrucchiere/appuntamento/:id` – Cancellazione di una prenotazione (solo se l'utente è il proprietario).
 
-### Interfaccia: 
+- **Real Time Updates (Socket.io):**  
+  L'applicazione utilizza Socket.io per aggiornare il calendario in tempo reale quando vengono aggiunti o cancellati appuntamenti.
 
-### Interfaccia Cliente:
+## Utenti Preimpostati per il Test
 
-Visualizzazione del calendario delle disponibilità per selezionare data, ora e servizio desiderato.
-Opzione per prenotare un appuntamento con conferma immediata o in attesa di approvazione.
-Sezione notifiche per aggiornamenti sugli appuntamenti: conferme, modifiche, o annullamenti da parte del salone.
-Accesso al proprio storico delle prenotazioni e possibilità di cancellare o riprogrammare appuntamenti futuri.
-Sezione di comunicazione diretta con il salone per domande o richieste specifiche.
+Per facilitare il testing e i login, il database è preconfigurato con i seguenti utenti:
 
-### Interfaccia Parrucchiere:
+- **Admin**  
+  - **Username:** `admin`  
+  - **Password:** `admin123`
 
-Pannello di gestione delle prenotazioni con visione del calendario settimanale/mensile e delle fasce orarie occupate/libere.
-Funzionalità di conferma, modifica o annullamento delle prenotazioni.
-Creazione di promozioni o offerte speciali visibili ai clienti nel calendario.
-Sezione notifiche per aggiornamenti sulle prenotazioni e richieste dei clienti.
-Accesso alla sezione di comunicazione con i clienti per eventuali richieste o modifiche alle prenotazioni.
+- **Parrucchiere**  
+  - **Username:** `parrucchiere`  
+  - **Password:** `parrucchiere123`
 
-### Interfaccia Amministrativa:
+- **Utente**  
+  - **Username:** `utente`  
+  - **Password:** `utente123`
 
-Possibilità di aggiungere e aggiornare i servizi offerti, definire fasce orarie, gestire il calendario delle disponibilità e personalizzare le politiche di cancellazione.
-Sezione per creare e gestire profili multipli per diversi parrucchieri all'interno dello stesso salone, con gestione centralizzata delle disponibilità.
+Questi utenti vengono creati automaticamente nel database al momento dell'inizializzazione (vedi il file `db.js`).
 
-# Raccolta Requisiti di HairPlan
+## Setup e Configurazione
 
-## Requisiti di Dominio
+### Configurazione del Progetto su GitHub
 
-1.1. Conoscenze Specifiche
-Servizi Offerti: Conoscenza dei servizi disponibili e gestione delle fasce orarie di disponibilità per ciascun servizio.
-Gestione delle Fasce Orarie: Definizione e organizzazione delle disponibilità giornaliere e settimanali del salone, inclusi eventuali blocchi per orari specifici.
-Politiche di Cancellazione: Regole chiare per la cancellazione delle prenotazioni, gestite in modo da rispettare le esigenze dei saloni e dei clienti.
+1. **Clonare il Repository:**
+   ```bash
+   git clone https://github.com/StefaTerce/HairPlan.git
+   cd HairPlan
+   ```
 
-1.2. Interazione Cliente-Parrucchiere
-Comunicazione: Il sistema facilita la comunicazione tra cliente e parrucchiere per richieste di modifica o chiarimenti sugli appuntamenti.
+2. **Installare le Dipendenze:**
+   Assicurati di avere Node.js installato e poi esegui:
+   ```bash
+   npm install
+   ```
 
-## Requisiti Funzionali
+3. **Configurare le Variabili d'Ambiente:**
+   Crea un file `.env` nella radice del progetto e inserisci le variabili necessarie, ad esempio:
+   ```env
+   PORT=3000
+   GOOGLE_CLIENT_ID=your_google_client_id
+   GOOGLE_CLIENT_SECRET=your_google_client_secret
+   NEWS_API_KEY=your_news_api_key
+   ```
+   Nel caso di SQLite, il file di database (es. `hairplan.db`) verrà creato automaticamente (vedi `db.js`).
 
-2.1. Prenotazione Online
-Descrizione: Permette ai clienti di prenotare appuntamenti selezionando data, ora e tipo di servizio.
-Tipo: Funzionale
+4. **Avviare il Server:**
+   Per avviare l'applicazione, esegui:
+   ```bash
+   npm start
+   ```
+   oppure:
+   ```bash
+   node app.js
+   ```
 
-2.2. Gestione del Calendario
-Descrizione: I parrucchieri possono creare, modificare e monitorare il proprio calendario delle prenotazioni.
-Tipo: Funzionale
+## Struttura del Progetto
 
-2.3. Autenticazione e Recupero Account
-Descrizione: Gli utenti possono registrarsi, effettuare il login, recuperare la password e verificare l’indirizzo email.
-Tipo: Funzionale
+- **app.js:** File principale che configura Express, le sessioni, le rotte e integra Socket.io.
+- **SQLiteDB.js:** Modulo per l'interazione con il database SQLite (gestisce utenti, calendari e appuntamenti).
+- **db.js:** Gestisce la connessione a SQLite, creando automaticamente il database e le tabelle se non esistono.
+- **/public:** Contiene file statici (CSS, immagini, JS lato client).
+- **/views:** Contiene i template Handlebars per le varie pagine (login, home, calendario, ecc.).
 
-2.4. Notifiche
-Descrizione: Invio di notifiche via email o SMS per conferme di appuntamenti, modifiche e annullamenti.
-Tipo: Funzionale
+## Istruzioni per Contribuire
 
-2.5. Gestione delle Prenotazioni
-Descrizione: Possibilità per i parrucchieri di confermare, rifiutare o annullare prenotazioni.
-Tipo: Funzionale
+1. Forka il repository e clona il tuo fork:
+   ```bash
+   git clone https://github.com/tuo-username/HairPlan.git
+   ```
+2. Crea un branch per la tua feature:
+   ```bash
+   git checkout -b feature/nuova-funzionalita
+   ```
+3. Effettua le modifiche e committa:
+   ```bash
+   git commit -am "Descrizione della funzionalità aggiunta"
+   ```
+4. Pusha il branch:
+   ```bash
+   git push origin feature/nuova-funzionalita
+   ```
+5. Apri una Pull Request su GitHub.
 
-2.6. Messaggistica Interna
-Descrizione: Consente la comunicazione diretta tra clienti e parrucchieri per richieste di modifica o dettagli sull’appuntamento.
-Tipo: Funzionale
+## Licenza
 
-## Requisiti Non Funzionali
-   
-3.1. Sicurezza
-Descrizione: Utilizzo di HTTPS e crittografia per proteggere i dati personali e le transazioni.
-Tipo: Non Funzionale
-
-3.2. Design Responsive
-Descrizione: L’interfaccia è ottimizzata per l’uso su desktop e dispositivi mobili.
-Tipo: Non Funzionale
-
-3.3. Prestazioni e Scalabilità
-Descrizione: Il sistema è progettato per offrire tempi di risposta rapidi e supportare un numero crescente di utenti senza perdita di prestazioni.
-Tipo: Non Funzionale
-
-3.4. Accessibilità
-Descrizione: L’interfaccia è sviluppata tenendo conto delle linee guida per l’accessibilità, rendendola usabile anche per utenti con disabilità.
-Tipo: Non Funzionale
+Distribuito sotto licenza MIT. Vedi il file [LICENSE](LICENSE) per maggiori dettagli.
+```
 
 ![image](https://github.com/user-attachments/assets/b24eab1e-dff5-4a57-b140-5585f9dc42bf)
 

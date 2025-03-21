@@ -324,7 +324,6 @@ app.post('/utente/calendario/:parrucchiere/appuntamento', async (req, res) => {
 });
 
 
-// DELETE: Cancella una prenotazione, solo se appartiene all'utente loggato
 app.delete('/utente/calendario/:parrucchiere/appuntamento/:id', async (req, res) => {
     const parrucchiere = req.params.parrucchiere;
     const appointmentId = parseInt(req.params.id);
@@ -335,7 +334,8 @@ app.delete('/utente/calendario/:parrucchiere/appuntamento/:id', async (req, res)
         const appointment = appointments.find(a => a.id === appointmentId);
         if (!appointment) return res.status(404).json({ error: 'Appuntamento non trovato' });
         if (appointment.utente !== utente) return res.status(403).json({ error: 'Non puoi cancellare questo appuntamento' });
-        await db.deleteAppointment(parrucchiere, appointmentId);
+        // Passa l'oggetto utente al metodo deleteAppointment
+        await db.deleteAppointment(parrucchiere, appointmentId, { username: utente });
         io.emit('appointmentUpdated', { parrucchiere });
         return res.json({ success: true, message: 'Appuntamento cancellato' });
     } catch (error) {
@@ -343,6 +343,7 @@ app.delete('/utente/calendario/:parrucchiere/appuntamento/:id', async (req, res)
         return res.status(500).json({ error: 'Errore interno' });
     }
 });
+
 
 // --- Endpoint API per parrucchieri ---
 app.get('/api/parrucchieri', async (req, res) => {
@@ -368,6 +369,17 @@ app.get('/api/parrucchieri/filtrati', async (req, res) => {
         res.json(parrucchieriFiltrati);
     } catch (error) {
         res.status(500).json({ error: 'Errore nel recupero dei parrucchieri' });
+    }
+});
+
+app.get('/utente/calendario/:parrucchiere/appuntamenti', async (req, res) => {
+    try {
+        const db = new SQLiteDB();
+        const appointments = await db.getAppointments(req.params.parrucchiere);
+        res.json(appointments);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Errore nel recupero degli appuntamenti' });
     }
 });
 

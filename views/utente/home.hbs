@@ -4,52 +4,319 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Utente</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
+    <title>HairPlan - Home Utente</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary: #f97316;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f9fafb;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #000000;
+            box-shadow: var(--shadow);
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .logo {
+            color: white;
+            font-weight: 700;
+            font-size: 1.75rem;
+            margin: 0;
+            text-align: center;
+        }
+
+        .logo-accent {
+            color: var(--primary);
+        }
+
+        /* Profile Icon */
+        .profile-icon {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s ease;
+            z-index: 1000;
+        }
+
+        .profile-icon:hover {
+            transform: scale(1.05);
+        }
+
+        /* Profile Info Panel */
+        .profile-info {
+            display: none;
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            width: 250px;
+            z-index: 999;
+            border-top: 4px solid var(--primary);
+        }
+
+        .profile-info p {
+            margin: 0.75rem 0;
+            font-size: 0.95rem;
+        }
+
+        .logout-btn {
+            display: block;
+            background-color: var(--secondary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: center;
+            margin-top: 1rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #ea580c;
+            color: white;
+        }
+
+        /* Visitor Count */
+        #visitorCount {
+            background-color: white;
+            color: var(--dark);
+            padding: 0.75rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            display: inline-block;
+        }
+
+        /* Salon Cards */
+        .salon-container {
+            margin-top: 2.5rem;
+        }
+
+        .salon-header {
+            position: relative;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .salon-header h2 {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .salon-header::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background-color: var(--primary);
+            margin: 0.75rem auto;
+            border-radius: 4px;
+        }
+
+        .salon-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            height: 100%;
+            border: none;
+        }
+
+        .salon-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .salon-card .card-body {
+            padding: 1.5rem;
+        }
+
+        .salon-card .card-title {
+            color: var(--dark);
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 0.75rem;
+        }
+
+        .salon-card .card-text {
+            margin-bottom: 0.75rem;
+            color: #64748b;
+        }
+
+        .salon-card .card-text strong {
+            color: var(--dark);
+            display: inline-block;
+            min-width: 80px;
+        }
+
+        .phone-copy {
+            color: var(--primary);
+            cursor: pointer;
+            transition: color 0.2s ease;
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            text-underline-offset: 2px;
+        }
+
+        .phone-copy:hover {
+            color: var(--primary-hover);
+        }
+
+        .phone-copy small {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+
+        .calendar-btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+            margin-top: 1rem;
+            display: block;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .calendar-btn:hover {
+            background-color: var(--primary-hover);
+            color: white;
+        }
+
+        /* Welcome Text */
+        .welcome-text {
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .profile-icon {
+                top: 15px;
+                right: 15px;
+                width: 40px;
+                height: 40px;
+            }
+
+            .profile-info {
+                width: 220px;
+                right: 15px;
+            }
+
+            header {
+                padding: 1rem 0;
+            }
+
+            .welcome-text {
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Cerchio per mostrare le informazioni dell'utente -->
+    <!-- Profile Icon -->
     <div class="profile-icon" onclick="toggleProfileInfo()">
         <span>{{firstLetter name}}</span>
     </div>
 
-    <!-- Informazioni utente -->
+    <!-- Profile Information Panel -->
     <div id="profileInfo" class="profile-info">
         <p><strong>Nome:</strong> {{name}}</p>
         <p><strong>Ruolo:</strong> {{role}}</p>
-        <a href="/logout" class="logout-btn">Logout</a>
+        <a href="/logout" class="logout-btn">
+            <i class="fas fa-sign-out-alt me-2"></i>Logout
+        </a>
     </div>
 
     <header>
-        <h1>{{message}}</h1>
+        <h1 class="logo"><span class="logo-accent">Hair</span>Plan</h1>
     </header>
 
     <main class="container">
-        <p class="text-center">Benvenuto nella tua home, {{name}}!</p>
-        <!-- Contatore visitatori in tempo reale -->
-        <div id="visitorCount" class="text-center mb-4">Visitatori online: 0</div>
+        <p class="welcome-text">Benvenuto nella tua home, <strong>{{name}}</strong>!</p>
+        
+        <!-- Real-time visitor counter -->
+        <div class="text-center">
+            <div id="visitorCount">
+                Visitatori online: 0
+            </div>
+        </div>
 
-        <!-- Sezione parrucchieri -->
-        <section>
-            <h2 class="mb-4 text-center">Scegli un parrucchiere</h2>
+        <!-- Hairdressers section -->
+        <section class="salon-container">
+            <div class="salon-header">
+                <h2>Scegli un parrucchiere</h2>
+            </div>
+            
             <div class="row g-4">
                 {{#each parrucchieri}}
-                <div class="col-md-4">
-                    <div class="card shadow-sm">
+                <div class="col-md-4 mb-4">
+                    <div class="salon-card card">
                         <div class="card-body">
                             <h3 class="card-title">{{nome_salone}}</h3>
-                            <p class="card-text"><strong>Servizi:</strong> {{servizi}}</p>
-                            <p class="card-text"><strong>Indirizzo:</strong> {{indirizzo}}</p>
+                            
+                            <p class="card-text">
+                                <strong>Servizi:</strong> {{servizi}}
+                            </p>
+                            
+                            <p class="card-text">
+                                <strong>Indirizzo:</strong> 
+                                <span>{{indirizzo}}</span>
+                            </p>
+                            
                             <p class="card-text">
                                 <strong>Telefono:</strong>
-                                <span onclick="copyToClipboard('{{telefono}}')" class="text-primary"
-                                    style="cursor: pointer;">
+                                <span class="phone-copy" onclick="copyToClipboard('{{telefono}}')">
                                     {{telefono}} <small>(Clicca per copiare)</small>
                                 </span>
                             </p>
-                            <a href="/utente/calendario/{{username}}" class="btn btn-primary w-100">Vedi calendario</a>
+                            
+                            <a href="/utente/calendario/{{username}}" class="calendar-btn">
+                                <i class="far fa-calendar-alt me-2"></i>Vedi calendario
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -58,8 +325,8 @@
         </section>
     </main>
 
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Includi Socket.io client -->
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
@@ -84,74 +351,3 @@
 </body>
 
 </html>
-<style>
-    /* Stile per il cerchio in alto a destra */
-    .profile-icon {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        width: 40px;
-        height: 40px;
-        background-color: #3498db;
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 18px;
-        cursor: pointer;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Stile per le informazioni dell'utente */
-    .profile-info {
-        display: none;
-        position: fixed;
-        top: 70px;
-        right: 20px;
-        background-color: white;
-        padding: 15px;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        width: 200px;
-    }
-
-    .profile-info p {
-        margin: 5px 0;
-    }
-
-    .logout-btn {
-        background-color: #e74c3c;
-        color: white;
-        padding: 5px 10px;
-        border-radius: 5px;
-        text-decoration: none;
-    }
-
-    .logout-btn:hover {
-        background-color: #c0392b;
-    }
-
-    /* Aggiungere stile per la sezione dei parrucchieri */
-    section {
-        margin-top: 20px;
-    }
-
-    ul {
-        list-style-type: none;
-        padding: 0;
-    }
-
-    ul li {
-        margin-bottom: 10px;
-    }
-
-    ul li a {
-        text-decoration: none;
-        color: #3498db;
-    }
-
-    ul li a:hover {
-        color: #2c3e50;
-    }
-</style>

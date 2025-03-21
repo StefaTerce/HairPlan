@@ -62,7 +62,6 @@
     </div>
     <div class="container">
       <p class="mb-0">Benvenuto, {{username}}</p>
-      <!-- La settimana verrà calcolata dinamicamente -->
       <p id="weekRange"></p>
     </div>
   </header>
@@ -80,10 +79,10 @@
     <div class="table-responsive">
       <table class="table table-bordered calendar-table">
         <thead class="table-light" id="calendarHeader">
-          <!-- L'header verrà generato dinamicamente -->
+          <!-- Header generato dinamicamente -->
         </thead>
         <tbody id="calendarBody">
-          <!-- Il corpo della tabella verrà generato dinamicamente -->
+          <!-- Corpo generato dinamicamente -->
         </tbody>
       </table>
     </div>
@@ -123,15 +122,14 @@
 
   <!-- Bootstrap JS Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Socket.io (opzionale, per aggiornamenti in tempo reale) -->
+  <!-- Socket.io -->
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    // Variabili per la settimana corrente
+    // Calcolo della settimana corrente e navigazione
     let currentDate = new Date();
-    // Funzione per calcolare il lunedì e la domenica della settimana in base a una data
+
     function getWeekRange(date) {
       const currentDay = date.getDay(); // 0 (Domenica) - 6 (Sabato)
-      // Consideriamo la settimana da lunedì a domenica:
       const diffToMonday = (currentDay === 0 ? -6 : 1 - currentDay);
       const diffToSunday = (currentDay === 0 ? 0 : 7 - currentDay);
       const monday = new Date(date);
@@ -141,12 +139,11 @@
       return { monday, sunday };
     }
 
-    // Funzione per formattare una data (es. 2025-03-20)
     function formatDate(date) {
       return date.toISOString().split('T')[0];
     }
 
-    // Aggiorna l'intestazione del calendario con i nomi dei giorni e le date
+    // Genera l'header del calendario (nome del giorno e data sotto)
     function renderCalendarHeader(weekDays) {
       const header = document.getElementById('calendarHeader');
       header.innerHTML = '';
@@ -162,7 +159,7 @@
       header.appendChild(row);
     }
 
-    // Renderizza il corpo del calendario (ore e slot)
+    // Genera il corpo del calendario (ore e slot)
     function renderCalendarBody(weekDays, ore) {
       const body = document.getElementById('calendarBody');
       body.innerHTML = '';
@@ -174,22 +171,17 @@
         weekDays.forEach(day => {
           const td = document.createElement('td');
           td.classList.add('slot');
-          // Imposta un id nello slot: ad esempio "slot-2025-03-20-08:00"
           td.id = `slot-${day.date}-${time}`;
-          // Se ci sono appuntamenti per questo slot, verranno inseriti lato server
-          // Qui potresti caricare dinamicamente gli appuntamenti se implementi una chiamata AJAX
-          // Al click, apri il modal passando data e ora
           td.addEventListener('click', () => openModal(day.date, time));
+          // Qui, se vuoi, puoi inserire gli appuntamenti già prenotati tramite un'altra funzione AJAX
           row.appendChild(td);
         });
         body.appendChild(row);
       });
     }
 
-    // Funzione per aggiornare la vista della settimana
     function renderWeek() {
       const { monday, sunday } = getWeekRange(currentDate);
-      // Calcola un array con 7 giorni (dal lunedì alla domenica)
       const weekDays = [];
       for (let i = 0; i < 7; i++) {
         const d = new Date(monday);
@@ -201,18 +193,14 @@
           date: formatDate(d)
         });
       }
-      // Aggiorna l'intestazione con il range
       document.getElementById('weekRange').innerText = `Settimana: ${formatDate(monday)} - ${formatDate(sunday)}`;
       renderCalendarHeader(weekDays);
-      // Definisci le ore (puoi modificarle in base alle esigenze)
       const ore = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00'];
       renderCalendarBody(weekDays, ore);
     }
 
-    // Inizializza la vista della settimana corrente
     renderWeek();
 
-    // Gestione dei bottoni per navigare tra le settimane
     document.getElementById('prevWeek').addEventListener('click', () => {
       currentDate.setDate(currentDate.getDate() - 7);
       renderWeek();
@@ -222,10 +210,9 @@
       renderWeek();
     });
 
-    // Variabile per tenere traccia dello slot selezionato nel modal
+    // Modal per prenotazioni
     let selectedSlot = {};
 
-    // Apri il modal e imposta la data e l'ora selezionate
     function openModal(data, time) {
       selectedSlot = { data, time };
       document.getElementById('modalDate').value = data;
@@ -235,13 +222,12 @@
       modal.show();
     }
 
-    // Salva la prenotazione (invia una POST)
     async function saveAppointment() {
       const data = document.getElementById('modalDate').value;
       const time = document.getElementById('modalTime').value;
       const descrizione = document.getElementById('modalDescription').value;
       try {
-        // Esegui la POST sull'endpoint per il calendario
+        // Usa l'endpoint basato sul path attuale, ad esempio: /utente/calendario/{{parrucchiere}}/appuntamento
         const response = await fetch(window.location.pathname + '/appuntamento', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -249,7 +235,6 @@
         });
         const result = await response.json();
         if (result.success) {
-          // Se salvato, ricarica la pagina per aggiornare il calendario
           location.reload();
         } else {
           alert(result.message || 'Errore nella prenotazione.');
@@ -259,10 +244,10 @@
       }
     }
 
-    // Integrazione Socket.io (opzionale) per aggiornamenti in tempo reale
+    // Socket.io per aggiornamenti in tempo reale (opzionale)
     const socket = io();
     socket.on('appointmentUpdated', data => {
-      // Se l'evento riguarda questo parrucchiere, ricarica il calendario
+      // Se l'evento riguarda questo parrucchiere, aggiorna il calendario
       location.reload();
     });
   </script>

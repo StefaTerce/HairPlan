@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Parrucchiere</title>
     <link rel="stylesheet" href="/static/css/styles.css">
 </head>
+
 <body>
-    <!-- Cerchio per mostrare le informazioni dell'utente -->
+    <!-- Profile Icon -->
     <div class="profile-icon" onclick="toggleProfileInfo()">
         <span>{{firstLetter name}}</span>
     </div>
@@ -20,9 +22,10 @@
     </div>
 
     <header>
-        <h1>{{message}}</h1>
+        <h1 class="logo"><span class="logo-accent">Hair</span>Plan</h1>
     </header>
     <main>
+
         <p>Benvenuto Parrucchiere, {{name}}!</p>
         <!-- Contatore visitatori in tempo reale -->
         <div id="visitorCount" class="text-center mb-4">Visitatori online: 0</div>
@@ -41,53 +44,176 @@
         }
     </script>
 </body>
+
 </html>
 
 <style>
-    /* Stile per il cerchio in alto a destra */
+    :root {
+        --primary: #6366f1;
+        --primary-hover: #4f46e5;
+        --secondary: #f97316;
+        --dark: #1e293b;
+        --light: #f8fafc;
+        --gray: #94a3b8;
+        --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background-color: #f9fafb;
+        color: var(--dark);
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+    }
+
+    header {
+        background-color: #000000;
+        box-shadow: var(--shadow);
+        padding: 1.5rem 0;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    header h1 {
+        color: white;
+        font-weight: 700;
+        font-size: 1.75rem;
+        margin: 0;
+    }
+
+    main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem 3rem;
+        text-align: center;
+    }
+
+    main p {
+        text-align: center;
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
+        color: var(--dark);
+        font-weight: 500;
+    }
+
+    /* Profile Icon */
     .profile-icon {
         position: fixed;
         top: 20px;
         right: 20px;
-        width: 40px;
-        height: 40px;
-        background-color: #3498db;
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-hover));
         color: white;
         border-radius: 50%;
         display: flex;
         justify-content: center;
         align-items: center;
         font-size: 18px;
+        font-weight: 600;
         cursor: pointer;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--shadow);
+        transition: transform 0.2s ease;
+        z-index: 1000;
     }
 
-    /* Stile per le informazioni dell'utente */
+    .profile-icon:hover {
+        transform: scale(1.05);
+    }
+
+    /* Profile Info Panel */
     .profile-info {
         display: none;
         position: fixed;
-        top: 70px;
+        top: 80px;
         right: 20px;
         background-color: white;
-        padding: 15px;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        width: 200px;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        width: 250px;
+        z-index: 999;
+        border-top: 4px solid var(--primary);
     }
 
     .profile-info p {
-        margin: 5px 0;
+        margin: 0.75rem 0;
+        font-size: 0.95rem;
     }
 
     .logout-btn {
-        background-color: #e74c3c;
+        display: block;
+        background-color: var(--secondary);
         color: white;
-        padding: 5px 10px;
-        border-radius: 5px;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
         text-decoration: none;
+        text-align: center;
+        margin-top: 1rem;
+        font-weight: 500;
+        transition: background-color 0.2s ease;
     }
 
     .logout-btn:hover {
-        background-color: #c0392b;
+        background-color: #ea580c;
+        color: white;
+    }
+
+    .logo {
+        color: white;
+        font-weight: 700;
+        font-size: 1.75rem;
+        margin: 0;
+        text-align: center;
+    }
+
+    .logo-accent {
+        color: var(--primary);
+    }
+
+    /* Visitor Count */
+    #visitorCount {
+        background-color: white;
+        color: var(--dark);
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+        font-size: 1rem;
+        margin: 0 auto;
+        display: inline-block;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .mb-4 {
+        margin-bottom: 1.5rem;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .profile-icon {
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            font-size: 16px;
+        }
+
+        .profile-info {
+            width: 220px;
+            right: 15px;
+            top: 70px;
+        }
+
+        header {
+            padding: 1rem 0;
+        }
+
+        main p {
+            font-size: 1.1rem;
+        }
     }
 </style>

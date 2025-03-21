@@ -82,11 +82,13 @@ class SQLiteDB {
   // Prenota uno slot per un parrucchiere.
   // Se non esiste ancora un calendario per il giorno, lo crea automaticamente.
   async prenotaSlot(username, giorno, ora, descrizione, utente) {
-    // Prova a recuperare il calendario per il giorno specifico
+    // Recupera il calendario per il giorno specifico
     let calendar = await this.getCalendario(username, giorno);
     if (!calendar) {
       // Se non esiste, crea un nuovo calendario con slot predefiniti
       const slots = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00'];
+      // La colonna "slot" contiene i tempi disponibili (per eventuale uso futuro)
+      // La colonna "prenotazioni" contiene un oggetto in cui ogni chiave (orario) è inizializzata a null
       const prenotazioni = {};
       slots.forEach(slot => {
         prenotazioni[slot] = null;
@@ -99,7 +101,7 @@ class SQLiteDB {
     }
     
     let prenotazioni = JSON.parse(calendar.prenotazioni);
-    // Se lo slot è disponibile, prenota l'appuntamento
+    // Verifica se lo slot richiesto è disponibile
     if (prenotazioni[ora] === null) {
       prenotazioni[ora] = utente.username;
       await run(
@@ -123,6 +125,19 @@ class SQLiteDB {
     }
     if (appointment.utente !== utente.username) {
       throw new Error('Non autorizzato a cancellare questo appuntamento');
+    }
+    // Opzionalmente: aggiornare il calendario rimuovendo la prenotazione dallo slot
+    const calendarRows = await runQuery('SELECT * FROM calendari WHERE username = ? AND giorno = ?', [parrucchiereUsername, appointment.giorno]);
+    if (calendarRows && calendarRows.length > 0) {
+      let calendar = calendarRows[0];
+      let prenotazioni = JSON.parse(calendar.prenotazioni);
+      if (prenotazioni[appointment.ora] === utente.username) {
+        prenotazioni[appointment.ora] = null;
+        await run(
+          'UPDATE calendari SET prenotazioni = ? WHERE id = ?',
+          [JSON.stringify(prenotazioni), calendar.id]
+        );
+      }
     }
     await run(
       'DELETE FROM appuntamenti WHERE parrucchiere_username = ? AND id = ?',

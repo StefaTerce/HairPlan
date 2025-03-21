@@ -1,153 +1,207 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Gestione Parrucchieri</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .profile-icon {
-            width: 40px;
-            height: 40px;
-            background-color: #007bff;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 18px;
-            cursor: pointer;
-            position: relative;
-        }
-        .profile-info {
-            position: absolute;
-            top: 50px;
-            right: 10px;
-            background: white;
-            border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 5px;
-            display: none;
-            z-index: 1000;
-        }
-        .profile-info a.logout-btn {
-            color: #dc3545;
-            text-decoration: none;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Gestione Parrucchieri</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+      :root {
+          --primary: #6366f1;
+          --primary-hover: #4f46e5;
+          --secondary: #f97316;
+          --dark: #1e293b;
+          --light: #f8fafc;
+          --gray: #94a3b8;
+          --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+      body {
+          font-family: 'Inter', sans-serif;
+          background-color: #f9fafb;
+          color: var(--dark);
+          margin: 0;
+          padding: 0;
+      }
+      header {
+          background-color: #000;
+          box-shadow: var(--shadow);
+          padding: 1.5rem 0;
+          text-align: center;
+      }
+      .logo {
+          color: white;
+          font-weight: 700;
+          font-size: 1.75rem;
+      }
+      .logo-accent {
+          color: var(--primary);
+      }
+      .profile-icon {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          width: 48px;
+          height: 48px;
+          background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+          color: white;
+          border-radius: 50%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 18px;
+          font-weight: 600;
+          cursor: pointer;
+          box-shadow: var(--shadow);
+          transition: transform 0.2s ease;
+          z-index: 1000;
+      }
+      .profile-icon:hover {
+          transform: scale(1.05);
+      }
+      .profile-info {
+          display: none;
+          position: fixed;
+          top: 80px;
+          right: 20px;
+          background-color: white;
+          padding: 1.5rem;
+          border-radius: 12px;
+          box-shadow: var(--shadow);
+          width: 250px;
+          z-index: 999;
+          border-top: 4px solid var(--primary);
+      }
+      .profile-info p {
+          margin: 0.75rem 0;
+          font-size: 0.95rem;
+      }
+      .logout-btn {
+          display: block;
+          background-color: var(--secondary);
+          color: white;
+          padding: 0.5rem 1rem;
+          border-radius: 8px;
+          text-decoration: none;
+          text-align: center;
+          margin-top: 1rem;
+          font-weight: 500;
+          transition: background-color 0.2s ease;
+      }
+      .logout-btn:hover {
+          background-color: #ea580c;
+          color: white;
+      }
+      main {
+          max-width: 1200px;
+          margin: 2rem auto;
+          padding: 0 1.5rem 3rem;
+      }
+      table.table {
+          background-color: white;
+          border-radius: 12px;
+          box-shadow: var(--shadow);
+      }
+  </style>
 </head>
-<body class="bg-light">
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Pannello Admin</a>
-            <div class="ms-auto">
-                <!-- Cerchio per mostrare le informazioni dell'utente -->
-                <div class="profile-icon" onclick="toggleProfileInfo()">
-                    <span>{{firstLetter name}}</span>
-                </div>
-                <!-- Menu o informazioni dell'utente -->
-                <div id="profileInfo" class="profile-info">
-                    <p><strong>Nome:</strong> {{name}}</p>
-                    <p><strong>Ruolo:</strong> {{role}}</p>
-                    <form action="/logout" method="GET">
-                        <button class="btn btn-danger btn-sm">Logout</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Benvenuto -->
-    <header class="text-center mt-4">
-        <h1>{{message}}</h1>
-        <p>Benvenuto Admin, {{name}}!</p>
-    </header>
-
-    <!-- Gestione Parrucchieri -->
-    <div class="container mt-5">
-        <h2 class="text-center mb-4">Gestione Parrucchieri</h2>
-
-        <!-- Elenco Parrucchieri -->
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>Nome</th>
-                    <th>Cognome</th>
-                    <th>Email</th>
-                    <th>Telefono</th>
-                    <th>Nome Salone</th>
-                    <th>Indirizzo</th>
-                    <th>Servizi Offerti</th>
-                    <th>Azioni</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each parrucchieri}}
-                <tr>
-                    <td>{{username}}</td>
-                    <td>{{nome}}</td>
-                    <td>{{cognome}}</td>
-                    <td>{{email}}</td>
-                    <td>{{telefono}}</td>
-                    <td>{{nome_salone}}</td>
-                    <td>{{indirizzo}}</td>
-                    <td>{{servizi_offerti}}</td>
-                    <td>
-                        <form action="/admin/parrucchieri/delete" method="POST" class="d-inline">
-                            <input type="hidden" name="username" value="{{username}}">
-                            <button type="submit" class="btn btn-danger btn-sm">Elimina</button>
-                        </form>
-                    </td>
-                </tr>
-                {{/each}}
-            </tbody>
-        </table>
-
-        <!-- Aggiungi Parrucchiere -->
-        <h2 class="mt-5">Aggiungi Parrucchiere</h2>
-        <form action="/admin/parrucchieri/add" method="POST" class="mt-3">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <input type="text" name="username" class="form-control" placeholder="Username" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <input type="password" name="password" class="form-control" placeholder="Password" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <input type="text" name="nome" class="form-control" placeholder="Nome" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <input type="text" name="cognome" class="form-control" placeholder="Cognome" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <input type="email" name="email" class="form-control" placeholder="Email" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <input type="text" name="telefono" class="form-control" placeholder="Telefono">
-                </div>
-                <div class="col-md-6 mb-3">
-                    <input type="text" name="nome_salone" class="form-control" placeholder="Nome Salone">
-                </div>
-                <div class="col-md-6 mb-3">
-                    <input type="text" name="indirizzo" class="form-control" placeholder="Indirizzo">
-                </div>
-                <div class="col-md-12 mb-3">
-                    <textarea name="servizi_offerti" class="form-control" placeholder="Servizi Offerti"></textarea>
-                </div>
-                <div class="col-md-12 text-center">
-                    <button type="submit" class="btn btn-primary">Aggiungi</button>
-                </div>
-            </div>
-        </form>
-    </div>
-
-    <script>
-        function toggleProfileInfo() {
-            const profileInfo = document.getElementById('profileInfo');
-            profileInfo.style.display = profileInfo.style.display === 'block' ? 'none' : 'block';
-        }
-    </script>
+<body>
+  <!-- Profile Icon -->
+  <div class="profile-icon" onclick="toggleProfileInfo()">
+      <span>{{firstLetter name}}</span>
+  </div>
+  <!-- Profile Info Panel -->
+  <div id="profileInfo" class="profile-info">
+      <p><strong>Nome:</strong> {{name}}</p>
+      <p><strong>Ruolo:</strong> {{role}}</p>
+      <a href="/logout" class="logout-btn">
+          <i class="fas fa-sign-out-alt me-2"></i>Logout
+      </a>
+  </div>
+  <header>
+      <h1 class="logo"><span class="logo-accent">Hair</span>Plan</h1>
+  </header>
+  <main class="container">
+      <h2 class="text-center mb-4">Gestione Parrucchieri</h2>
+      
+      <!-- Elenco Parrucchieri -->
+      <table class="table table-striped">
+          <thead>
+              <tr>
+                  <th>Username</th>
+                  <th>Nome</th>
+                  <th>Cognome</th>
+                  <th>Email</th>
+                  <th>Telefono</th>
+                  <th>Nome Salone</th>
+                  <th>Indirizzo</th>
+                  <th>Servizi Offerti</th>
+                  <th>Azioni</th>
+              </tr>
+          </thead>
+          <tbody>
+              {{#each parrucchieri}}
+              <tr>
+                  <td>{{username}}</td>
+                  <td>{{nome}}</td>
+                  <td>{{cognome}}</td>
+                  <td>{{email}}</td>
+                  <td>{{telefono}}</td>
+                  <td>{{nome_salone}}</td>
+                  <td>{{indirizzo}}</td>
+                  <td>{{servizi_offerti}}</td>
+                  <td>
+                      <form action="/admin/parrucchieri/delete" method="POST" class="d-inline">
+                          <input type="hidden" name="username" value="{{username}}">
+                          <button type="submit" class="btn btn-danger btn-sm">Elimina</button>
+                      </form>
+                  </td>
+              </tr>
+              {{/each}}
+          </tbody>
+      </table>
+      
+      <!-- Aggiungi Parrucchiere -->
+      <h2 class="mt-5">Aggiungi Parrucchiere</h2>
+      <form action="/admin/parrucchieri/add" method="POST" class="mt-3">
+          <div class="row">
+              <div class="col-md-6 mb-3">
+                  <input type="text" name="username" class="form-control" placeholder="Username" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                  <input type="password" name="password" class="form-control" placeholder="Password" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                  <input type="text" name="nome" class="form-control" placeholder="Nome" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                  <input type="text" name="cognome" class="form-control" placeholder="Cognome" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                  <input type="email" name="email" class="form-control" placeholder="Email" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                  <input type="text" name="telefono" class="form-control" placeholder="Telefono">
+              </div>
+              <div class="col-md-6 mb-3">
+                  <input type="text" name="nome_salone" class="form-control" placeholder="Nome Salone">
+              </div>
+              <div class="col-md-6 mb-3">
+                  <input type="text" name="indirizzo" class="form-control" placeholder="Indirizzo">
+              </div>
+              <div class="col-md-12 mb-3">
+                  <textarea name="servizi_offerti" class="form-control" placeholder="Servizi Offerti"></textarea>
+              </div>
+              <div class="col-md-12 text-center">
+                  <button type="submit" class="btn btn-primary">Aggiungi</button>
+              </div>
+          </div>
+      </form>
+  </main>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+      function toggleProfileInfo() {
+          const profileInfo = document.getElementById('profileInfo');
+          profileInfo.style.display = profileInfo.style.display === 'block' ? 'none' : 'block';
+      }
+  </script>
 </body>
 </html>

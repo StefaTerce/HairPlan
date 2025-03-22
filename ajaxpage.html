@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista Parrucchieri</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --dark: #1e293b;
+      --light: #f8fafc;
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f9fafb;
+      color: var(--dark);
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+  <header class="bg-dark text-white text-center py-3">
+    <h1><span style="color: var(--primary);">Hair</span>Plan</h1>
+  </header>
+  <div class="container my-5">
+    <div class="card mx-auto" style="max-width: 600px;">
+      <div class="card-body">
+        <h2 class="card-title text-center mb-4">Lista Parrucchieri</h2>
+        <div class="mb-3 d-grid gap-2">
+          <button id="load-all-parrucchieri" class="btn btn-primary">Carica Tutti i Parrucchieri</button>
+        </div>
+        <div class="mb-3">
+          <label for="filter-servizi" class="form-label">Filtra per Servizi:</label>
+          <input type="text" id="filter-servizi" class="form-control" placeholder="Esempio: taglio, shampoo">
+        </div>
+        <div class="mb-3 d-grid gap-2">
+          <button id="load-filtered-parrucchieri" class="btn btn-primary">Carica Parrucchieri Filtrati</button>
+        </div>
+        <hr>
+        <div id="parrucchiere-list">
+          <!-- La lista dei parrucchieri verrà inserita qui -->
+        </div>
+        <!-- Tasto per tornare alla home -->
+        <div class="d-grid gap-2 mt-3">
+          <button id="home-button" class="btn btn-secondary">Torna ad Home</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Funzione per caricare tutti i parrucchieri
+    document.getElementById('load-all-parrucchieri').addEventListener('click', function() {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', '/api/parrucchieri', true);
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          const data = JSON.parse(xhr.responseText);
+          const listContainer = document.getElementById('parrucchiere-list');
+          listContainer.innerHTML = ''; // Svuota la lista esistente
+          data.forEach(function(parrucchiere) {
+            const p = document.createElement('p');
+            p.textContent = parrucchiere.nome_salone + ' - ' + parrucchiere.servizi_offerti;
+            listContainer.appendChild(p);
+          });
+        } else {
+          alert('Errore nel caricamento dei parrucchieri');
+        }
+      };
+      xhr.onerror = function() {
+        alert('Errore di rete');
+      };
+      xhr.send();
+    });
+
+    // Funzione per caricare i parrucchieri filtrati per servizi
+    document.getElementById('load-filtered-parrucchieri').addEventListener('click', function() {
+      const servizi = document.getElementById('filter-servizi').value;
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', '/api/parrucchieri/filtrati?servizi=' + encodeURIComponent(servizi), true);
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          const data = JSON.parse(xhr.responseText);
+          const listContainer = document.getElementById('parrucchiere-list');
+          listContainer.innerHTML = ''; // Svuota la lista esistente
+          data.forEach(function(parrucchiere) {
+            const p = document.createElement('p');
+            p.textContent = parrucchiere.nome_salone + ' - ' + parrucchiere.servizi_offerti;
+            listContainer.appendChild(p);
+          });
+        } else {
+          alert('Errore nel caricamento dei parrucchieri filtrati');
+        }
+      };
+      xhr.onerror = function() {
+        alert('Errore di rete');
+      };
+      xhr.send();
+    });
+
+    // Tasto per tornare ad Home
+    document.getElementById('home-button').addEventListener('click', function(){
+      window.location.href = '/utente/home';
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

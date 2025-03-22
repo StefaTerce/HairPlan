@@ -9,6 +9,7 @@ require('dotenv').config();
 const SQLiteDB = require('./SQLiteDB.js');
 const db = new SQLiteDB();
 
+
 //#region Hbs
 hbs.registerHelper('and', function (a, b) {
     return a && b;
@@ -135,6 +136,31 @@ setInterval(() => {
 }, 5000);
 
 // --- Rotte di autenticazione, login, registrazione, logout ---
+
+// Rotta per la pagina AJAX
+app.get('/ajax', (req, res) => {
+    res.sendFile(path.join(__dirname, 'ajaxpage.html'));
+});
+
+const axios = require('axios');
+
+
+app.get('/news', async (req, res) => {
+    try {
+      const response = await axios.get('https://newsapi.org/v2/everything', {
+        params: {
+          q: 'acconciature',   // Filtro per "acconciature"
+          language: 'it',
+          sortBy: 'publishedAt',
+          apiKey: process.env.NEWS_API_KEY
+        }
+      });
+      res.json(response.data.articles);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Errore nel recupero delle notizie' });
+    }
+  });
 
 app.get('/session', (req, res) => {
     res.json(req.session);
@@ -288,12 +314,14 @@ app.get('/otherPage', (req, res) => {
 app.get('/utente/calendario/:parrucchiere', async (req, res) => {
     const parrucchiere = req.params.parrucchiere;
     try {
-        // Recupera il calendario (potresti usare db.getCalendario) e gli appuntamenti dal DB
+        // Per questo esempio, usiamo la data odierna come "giorno"
+        const giorno = new Date().toISOString().slice(0, 10);
+        const calendario = await db.getCalendario(parrucchiere, giorno);
         const appuntamenti = await db.getAppointments(parrucchiere);
-        // Imposta qui giorni e ore (o calcolali dinamicamente)
         res.render('calendari/calendario-settimana', {
             username: parrucchiere,
-            settimana: 'Settimana corrente', // Puoi renderla dinamica
+            calendario, // Passa i dati del calendario (opzionale)
+            settimana: 'Settimana corrente',
             giorni: ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica'],
             ore: ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00'],
             appuntamenti
@@ -303,6 +331,7 @@ app.get('/utente/calendario/:parrucchiere', async (req, res) => {
         res.render('error', { message: 'Errore nel caricamento del calendario.' });
     }
 });
+
 
 app.post('/utente/calendario/:parrucchiere/appuntamento', async (req, res) => {
   const parrucchiere = req.params.parrucchiere;
@@ -358,19 +387,31 @@ app.get('/api/parrucchieri', async (req, res) => {
 app.get('/api/parrucchieri/filtrati', async (req, res) => {
     const serviziRicercati = req.query.servizi;
     if (!serviziRicercati) return res.status(400).json({ error: 'Servizi non specificati' });
-    const serviziArray = serviziRicercati.split(',');
+    
+    // Normalizza i servizi richiesti: elimina spazi e trasforma in minuscolo
+    const serviziArray = serviziRicercati
+      .split(',')
+      .map(servizio => servizio.trim().toLowerCase());
+
     try {
         const parrucchieri = await db.getAllParrucchieri();
         const parrucchieriFiltrati = parrucchieri.filter(parrucchiere => {
             if (!parrucchiere.servizi_offerti) return false;
-            const serviziOfferti = parrucchiere.servizi_offerti.split(',');
-            return serviziArray.every(servizio => serviziOfferti.includes(servizio.trim()));
+            
+            // Normalizza i servizi offerti
+            const serviziOfferti = parrucchiere.servizi_offerti
+              .split(',')
+              .map(s => s.trim().toLowerCase());
+            
+            // Verifica che tutti i servizi richiesti siano presenti tra i servizi offerti
+            return serviziArray.every(servizio => serviziOfferti.includes(servizio));
         });
         res.json(parrucchieriFiltrati);
     } catch (error) {
         res.status(500).json({ error: 'Errore nel recupero dei parrucchieri' });
     }
 });
+
 
 app.get('/utente/calendario/:parrucchiere/appuntamenti', async (req, res) => {
     try {

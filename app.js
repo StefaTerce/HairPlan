@@ -175,6 +175,15 @@ app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
+app.get('/', (req, res) => {
+    if (req.session.loggedin) {
+        if (req.session.role === 'admin') return res.redirect('/admin/home');
+        else if (req.session.role === 'parrucchiere') return res.redirect('/parrucchiere/home');
+        else if (req.session.role === 'utente') return res.redirect('/utente/home');
+    }
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
 app.get('/login/error', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login_error.html'));
 });

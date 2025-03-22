@@ -20,6 +20,7 @@
    PORT=3000
    GOOGLE_CLIENT_ID=your_google_client_id
    GOOGLE_CLIENT_SECRET=your_google_client_secret
+   NEWS_API_KEY=your_newsapikey
    ```
    Nel caso di SQLite, il file di database (es. `hairplan.db`) verrà creato automaticamente (vedi `db.js`).
 

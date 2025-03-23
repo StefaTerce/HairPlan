@@ -25,6 +25,13 @@ npm install
 
 node app.js
    ```
+
+e crea un file .env
+```bash
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+NEWS_API_KEY=your_newsapikey
+```
 Apri il browser e vai all'indirizzo: http://localhost:3000
 
 ### Configurazione del Progetto su GitHub

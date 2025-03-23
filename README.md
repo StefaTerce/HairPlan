@@ -2,6 +2,7 @@
 ## Setup e Configurazione
 
 ### Configurazione sulla VM Alpine
+### ALL INSTALLAZIONE DI VIRTUAL BOX POTREBBE ESSERE NECESSARIO RIAVVIARE IL PC
 Dopo Aver Scaricato il progetto entra sulla cartella VirtualMachine Setup ed avvia il file .bat all interno come amministratore
 dopo
 

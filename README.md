@@ -1,6 +1,23 @@
 # HairPlan
 ## Setup e Configurazione
 
+### Configurazione sulla VM Alpine
+Dopo Aver Scaricato il progetto entra sulla cartella VirtualMachine Setup ed avvia il file .bat all interno come amministratore
+dopo
+Accedi alla VM tramite SSH:
+
+In PuTTY: inserisci localhost come host e 2222 come porta
+Utente: mastroiannim
+Password: paleocapa
+Clona il repository: git clone https://github.com/StefaTerce/HairPlan.git
+Entra nella directory del progetto: cd HairPlan
+ed esegui i comandi
+
+npm install
+node app.js
+
+Apri il browser e vai all'indirizzo: http://localhost:3000
+
 ### Configurazione del Progetto su GitHub
 
 1. **Clonare il Repository:**

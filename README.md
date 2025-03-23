@@ -13,16 +13,18 @@ Utente: mastroiannim
 
 Password: paleocapa
 
-Clona il repository: git clone https://github.com/StefaTerce/HairPlan.git
-
+Clona il repository: 
+   ```bash
+git clone https://github.com/StefaTerce/HairPlan.git
+   ```
 Entra nella directory del progetto: cd HairPlan
 
 ed esegui i comandi
-
+   ```bash
 npm install
 
 node app.js
-
+   ```
 Apri il browser e vai all'indirizzo: http://localhost:3000
 
 ### Configurazione del Progetto su GitHub

@@ -6,14 +6,16 @@
 ## Requisiti
 1. Installa **Docker** (Docker Desktop) funzionante https://www.docker.com/products/docker-desktop/.
 
-2. Crea un file .env per le chiavi
+2. Scarica La Repository
+
+3. Nella repository scaricata Crea un file .env per le chiavi
 ```bash
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 NEWS_API_KEY=your_newsapikey
 ```
 Dopo Aver fatto i Requisiti clicca su Setup.bat ed avvia il file
-Apri il browser e vai all'indirizzo: http://localhost:3000
+Infine una volta terminato Apri il browser e vai all'indirizzo: http://localhost:3000
 
 ### Configurazione del Progetto da GitHub
 

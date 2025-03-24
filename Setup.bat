@@ -46,8 +46,7 @@ timeout /t 10 >nul
 rem Check if services are running
 %DOCKER_COMPOSE_CMD% ps | findstr /C:"Up" >nul
 if %errorlevel%==0 (
-    echo Services are running!
-    echo Backend is available at: http://localhost:3000
+    echo Site available at: http://localhost:3000
     echo.
     echo Press Enter to continue...
     pause

@@ -1,0 +1,8 @@
+services:
+  hairplan:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      # Altre variabili d'ambiente se necessarie

@@ -15,7 +15,7 @@ NEWS_API_KEY=your_newsapikey
 Dopo Aver fatto i Requisiti clicca su Setup.bat ed avvia il file
 Apri il browser e vai all'indirizzo: http://localhost:3000
 
-### Configurazione del Progetto su GitHub
+### Configurazione del Progetto da GitHub
 
 1. **Clonare il Repository:**
    ```bash

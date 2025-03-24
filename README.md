@@ -1,38 +1,18 @@
 # HairPlan
 ## Setup e Configurazione
 
-### Configurazione sulla VM Alpine
-### ALL INSTALLAZIONE DI VIRTUAL BOX POTREBBE ESSERE NECESSARIO RIAVVIARE IL PC
-Dopo Aver Scaricato il progetto entra sulla cartella VirtualMachine Setup ed avvia il file .bat all interno come amministratore
-dopo
+### Configurazione di DOCKER
 
-Accedi alla VM tramite SSH:
+## Requisiti
+1. Installa **Docker** (Docker Desktop) funzionante.
 
-In PuTTY: inserisci localhost come host e 2222 come porta
-
-Utente: mastroiannim
-
-Password: paleocapa
-
-Clona il repository: 
-   ```bash
-git clone https://github.com/StefaTerce/HairPlan.git
-   ```
-Entra nella directory del progetto: cd HairPlan
-
-ed esegui i comandi
-   ```bash
-npm install
-
-node app.js
-   ```
-
-e crea un file .env
+2. Crea un file .env per le chiavi
 ```bash
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 NEWS_API_KEY=your_newsapikey
 ```
+Dopo Aver fatto i Requisiti clicca su Setup.bat ed avvia il file
 Apri il browser e vai all'indirizzo: http://localhost:3000
 
 ### Configurazione del Progetto su GitHub

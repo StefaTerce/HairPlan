@@ -4,7 +4,7 @@
 ### Configurazione di DOCKER
 
 ## Requisiti
-1. Installa **Docker** (Docker Desktop) funzionante.
+1. Installa **Docker** (Docker Desktop) funzionante https://www.docker.com/products/docker-desktop/.
 
 2. Crea un file .env per le chiavi
 ```bash

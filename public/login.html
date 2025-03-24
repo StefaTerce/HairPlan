@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
     :root {
       --primary: #6366f1;
@@ -13,7 +13,10 @@
       --dark: #1e293b;
       --light: #f8fafc;
       --gray: #94a3b8;
-      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+    }
+    html, body {
+      height: 100%;
     }
     body {
       font-family: 'Inter', sans-serif;
@@ -21,6 +24,9 @@
       color: var(--dark);
       margin: 0;
       padding: 0;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 60px; /* Spazio per il footer fisso */
     }
     header {
       background-color: #000;
@@ -36,58 +42,86 @@
     .logo-accent {
       color: var(--primary);
     }
+    /* Spazio tra header e contenuto */
+    .main-container {
+      margin-top: 40px;
+    }
     .card {
       border: none;
       border-radius: 12px;
       box-shadow: var(--shadow);
     }
-    .google-login-btn {
-      display: flex;
-      align-items: center;
-      background-color: #fff;
-      color: #757575;
-      font-size: 16px;
-      font-weight: bold;
-      text-decoration: none;
-      border: 1px solid #dadce0;
-      border-radius: 4px;
-      padding: 10px 20px;
-      transition: all 0.3s ease;
+    .btn-primary {
+      background-color: var(--primary);
+      border-color: var(--primary);
     }
-    .google-login-btn:hover {
-      background-color: #f7f7f7;
-      border-color: #c6c6c6;
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+      border-color: var(--primary-hover);
     }
-    .google-icon {
-      width: 20px;
-      height: 20px;
-      margin-right: 10px;
+    /* Spaziatura tra la card di login e le notizie */
+    .login-container {
+      margin-bottom: 30px;
+    }
+    .news-container {
+      margin-top: 30px;
+      margin-bottom: 80px; /* Maggiore distanza dal footer */
+    }
+    /* Footer fisso con sfondo nero */
+    footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: #000;
+      color: #fff;
+      border-top: none;
+      padding: 10px 0;
+    }
+    footer a.btn {
+      border-color: #fff;
+      color: #fff;
+    }
+    footer a.btn:hover {
+      background-color: #333;
+      border-color: #333;
+      color: #fff;
     }
   </style>
 </head>
-<body>
+<body class="d-flex flex-column">
   <header>
     <h1 class="logo"><span class="logo-accent">Hair</span>Plan</h1>
   </header>
-  <div class="container d-flex justify-content-center align-items-center vh-100">
-    <div class="card shadow-sm" style="max-width: 400px; width: 100%;">
+  <div class="container main-container d-flex flex-column flex-grow-1 justify-content-center align-items-center">
+    <!-- Sezione Login -->
+    <div class="card shadow-sm login-container" style="max-width: 400px; width: 100%;">
       <div class="card-body">
         <h1 class="text-center mb-4">Login</h1>
         <form action="/login" method="POST">
           <div class="mb-3">
             <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" id="username" name="username" required>
+            <input type="text" class="form-control" id="username" name="username" required />
           </div>
           <div class="mb-3">
             <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" name="password" required>
+            <!-- Input group per la password con bottone toggle -->
+            <div class="input-group">
+              <input type="password" class="form-control" id="password" name="password" required />
+              <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                <!-- Icona occhio (eye) iniziale -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                  <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM8 10a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/>
+                  <path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                </svg>
+              </button>
+            </div>
           </div>
           <button type="submit" class="btn btn-primary w-100">Accedi</button>
         </form>
-        <br><br>
+        <br />
         <div class="d-flex justify-content-center mb-3">
-          <a href="/auth/google" class="google-login-btn">
-            <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" alt="Google Logo" class="google-icon">
+          <a href="/auth/google" class="google-login-btn d-flex align-items-center">
+            <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" alt="Google Logo" class="google-icon" style="width:20px; height:20px; margin-right:10px;" />
             <span>Accedi con Google</span>
           </a>
         </div>
@@ -96,9 +130,86 @@
         </div>
       </div>
     </div>
+    <!-- Sezione News -->
+    <div class="news-container" style="max-width: 400px; width: 100%;">
+      <h2 class="text-center">News Acconciature</h2>
+      <div id="news-container" class="list-group">
+        <!-- Gli articoli verranno inseriti qui -->
+      </div>
+    </div>
   </div>
+  <!-- Footer Fisso -->
+  <footer>
+    <div class="container d-flex justify-content-center">
+      <a href="/api-docs" class="btn btn-outline-light mx-2">Swagger</a>
+      <a href="/ajax" class="btn btn-outline-light mx-2">Pagina AJAX</a>
+      <a href="https://github.com/StefaTerce/HairPlan" target="_blank" class="btn btn-outline-light mx-2">GitHub</a>
+    </div>
+  </footer>
+  
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
   <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+  <script>
+    // Toggle per mostrare/nascondere la password nel login
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordField = document.getElementById('password');
+    
+    togglePassword.addEventListener('click', function() {
+      const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordField.setAttribute('type', type);
+      this.innerHTML = type === 'password'
+        ? `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+             <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM8 10a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/>
+             <path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+           </svg>`
+        : `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-slash" viewBox="0 0 16 16">
+             <path d="M13.359 11.238l1.287 1.287a.5.5 0 0 1-.708.708l-1.287-1.287a8.093 8.093 0 0 1-3.66 1.185l.78.78a.5.5 0 0 1-.707.707l-.78-.78a8.143 8.143 0 0 1-3.617-1.28l-1.287 1.287a.5.5 0 1 1-.708-.708l1.287-1.287A8.091 8.091 0 0 1 .641 8a8.093 8.093 0 0 1 2.295-3.532L1.65 3.182a.5.5 0 1 1 .708-.708l1.287 1.287A8.143 8.143 0 0 1 8 .641a8.093 8.093 0 0 1 3.532 2.295l1.287-1.287a.5.5 0 1 1 .708.708l-1.287 1.287a8.143 8.143 0 0 1 1.28 3.617c0 .27-.023.535-.07.795zM8 1a7 7 0 0 0-6.293 3.707l1.513 1.513A4.5 4.5 0 0 1 8 3.5c1.153 0 2.21.446 3 1.175L12.293 3.707A7 7 0 0 0 8 1z"/>
+             <path d="M3.707 4.293A7 7 0 0 0 1 8c0 .27.023.535.07.795l1.287-1.287A4.5 4.5 0 0 1 3.5 8c0 .841.293 1.615.781 2.222l1.513-1.513A2.5 2.5 0 0 0 8 8a2.5 2.5 0 0 0-1.293-.781l1.287-1.287A7.002 7.002 0 0 0 3.707 4.293z"/>
+           </svg>`;
+    });
+  </script>
+  
+  <script>
+    // Carica le notizie dalla rotta /news e le inserisce nel container
+    document.addEventListener("DOMContentLoaded", function(){
+      fetch('/news')
+        .then(response => response.json())
+        .then(data => {
+          const newsContainer = document.getElementById('news-container');
+          if(data.error) {
+            newsContainer.innerHTML = '<p>Errore nel caricamento delle notizie.</p>';
+            return;
+          }
+          // Mostra ad esempio i primi 5 articoli
+          data.slice(0, 5).forEach(article => {
+            const item = document.createElement('a');
+            item.href = article.url;
+            item.target = "_blank";
+            item.classList.add('list-group-item', 'list-group-item-action', 'd-flex', 'align-items-center');
+            
+            // Immagine dell'articolo
+            const img = document.createElement('img');
+            img.src = article.urlToImage || 'https://via.placeholder.com/80';
+            img.alt = article.title;
+            img.style.width = '80px';
+            img.style.height = '80px';
+            img.style.objectFit = 'cover';
+            img.classList.add('me-3');
+            
+            // Titolo dell'articolo
+            const title = document.createElement('div');
+            title.textContent = article.title;
+            
+            item.appendChild(img);
+            item.appendChild(title);
+            newsContainer.appendChild(item);
+          });
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    });
+  </script>
 </body>
 </html>

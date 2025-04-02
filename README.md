@@ -1,8 +1,8 @@
 # HairPlan
-### Setup e Configurazione
-## Configurazione di DOCKER
+## Setup e Configurazione
+### Configurazione di DOCKER
 
-#### Requisiti
+ Requisiti
 1. Installa **Docker** (Docker Desktop) funzionante https://www.docker.com/products/docker-desktop/.
 
 L'immagine ufficiale è ospitata su Docker Hub:

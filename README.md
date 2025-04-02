@@ -16,9 +16,9 @@ Per scaricare ed eseguire l'immagine, segui questi passaggi:
    docker pull terceros/hairplan:latest
    ```
 
-2. Avvia il container (sostituisci i valori delle chiavi API se necessario):
+2. Avvia il container (sostituisci i valori delle chiavi API è NECESSARIO):
    ```bash
-   Editdocker run -d -p 3000:3000 --name hairplan_container -e GOOGLE_CLIENT_ID=YOUR_GOOGLE_CLIENT_ID -e GOOGLE_CLIENT_SECRET=YOUR_GOOGLE_CLIENT_SECRET -e NEWS_API_KEY=YOUR_NEWS_API_KEY terceros/hairplan:latest
+   docker run -d -p 3000:3000 --name hairplan_container -e GOOGLE_CLIENT_ID=YOUR_GOOGLE_CLIENT_ID -e GOOGLE_CLIENT_SECRET=YOUR_GOOGLE_CLIENT_SECRET -e NEWS_API_KEY=YOUR_NEWS_API_KEY terceros/hairplan:latest
    ```
 3. Accedi all'applicazione su:
    ```bash

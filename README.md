@@ -6,48 +6,24 @@
 ## Requisiti
 1. Installa **Docker** (Docker Desktop) funzionante https://www.docker.com/products/docker-desktop/.
 
-2. Scarica La Repository
+L'immagine ufficiale è ospitata su Docker Hub:
+- **Docker Hub Username:** terceros
+- **Immagine:** `terceros/hairplan:latest`
 
-3. Nella repository scaricata Crea un file .env per le chiavi
-```bash
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-NEWS_API_KEY=your_newsapikey
-```
-Dopo Aver fatto i Requisiti clicca su Setup.bat ed avvia il file
-Infine una volta terminato Apri il browser e vai all'indirizzo: http://localhost:3000
+Per scaricare ed eseguire l'immagine, segui questi passaggi:
 
-### Configurazione del Progetto da GitHub
-
-1. **Clonare il Repository:**
+1. Scarica l'immagine:
    ```bash
-   git clone https://github.com/StefaTerce/HairPlan.git
-   cd HairPlan
-
-2. **Installare le Dipendenze:**
-   Assicurati di avere Node.js installato e poi esegui:
-   ```bash
-   npm install
+   docker pull terceros/hairplan:latest
    ```
 
-3. **Configurare le Variabili d'Ambiente:**
-   Crea un file `.env` nella radice del progetto e inserisci le variabili necessarie, ad esempio:
-   ```env
-   PORT=3000
-   GOOGLE_CLIENT_ID=your_google_client_id
-   GOOGLE_CLIENT_SECRET=your_google_client_secret
-   NEWS_API_KEY=your_newsapikey
-   ```
-   Nel caso di SQLite, il file di database (es. `hairplan.db`) verrà creato automaticamente (vedi `db.js`).
-
-4. **Avviare il Server:**
-   Per avviare l'applicazione, esegui:
+2. Avvia il container (sostituisci i valori delle chiavi API se necessario):
    ```bash
-   npm start
+   Editdocker run -d -p 3000:3000 --name hairplan_container -e GOOGLE_CLIENT_ID=YOUR_GOOGLE_CLIENT_ID -e GOOGLE_CLIENT_SECRET=YOUR_GOOGLE_CLIENT_SECRET -e NEWS_API_KEY=YOUR_NEWS_API_KEY terceros/hairplan:latest
    ```
-   oppure:
+3. Accedi all'applicazione su:
    ```bash
-   node app.js
+   http://localhost:3000
    ```
 
 ## Descrizione

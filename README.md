@@ -1,29 +1,4 @@
 # HairPlan
-## Setup e Configurazione
-### Configurazione di DOCKER
-
- Requisiti
-1. Installa **Docker** (Docker Desktop) funzionante https://www.docker.com/products/docker-desktop/.
-
-L'immagine ufficiale è ospitata su Docker Hub:
-- **Docker Hub Username:** terceros https://hub.docker.com/r/terceros/hairplan
-- **Immagine:** `terceros/hairplan:latest`
-
-Per scaricare ed eseguire l'immagine, segui questi passaggi:
-
-1. Scarica l'immagine:
-   ```bash
-   docker pull terceros/hairplan:latest
-   ```
-
-2. Avvia il container (sostituisci i valori delle chiavi API è NECESSARIO):
-   ```bash
-   docker run -d -p 3000:3000 --name hairplan_container -e GOOGLE_CLIENT_ID=YOUR_GOOGLE_CLIENT_ID -e GOOGLE_CLIENT_SECRET=YOUR_GOOGLE_CLIENT_SECRET -e NEWS_API_KEY=YOUR_NEWS_API_KEY terceros/hairplan:latest
-   ```
-3. Accedi all'applicazione su:
-   ```bash
-   http://localhost:3000
-   ```
 
 ## Descrizione
 
@@ -75,6 +50,32 @@ HairPlan risolve le problematiche legate alla gestione e organizzazione delle pr
 
 - **Real Time Updates (Socket.io):**  
   L'applicazione utilizza Socket.io per aggiornare il calendario in tempo reale quando vengono aggiunti o cancellati appuntamenti.
+
+## Setup e Configurazione
+### Configurazione di DOCKER
+
+ Requisiti
+1. Installa **Docker** (Docker Desktop) funzionante https://www.docker.com/products/docker-desktop/.
+
+L'immagine ufficiale è ospitata su Docker Hub:
+- **Docker Hub Username:** terceros https://hub.docker.com/r/terceros/hairplan
+- **Immagine:** `terceros/hairplan:latest`
+
+Per scaricare ed eseguire l'immagine, segui questi passaggi:
+
+1. Scarica l'immagine:
+   ```bash
+   docker pull terceros/hairplan:latest
+   ```
+
+2. Avvia il container (sostituisci i valori delle chiavi API è NECESSARIO):
+   ```bash
+   docker run -d -p 3000:3000 --name hairplan_container -e GOOGLE_CLIENT_ID=YOUR_GOOGLE_CLIENT_ID -e GOOGLE_CLIENT_SECRET=YOUR_GOOGLE_CLIENT_SECRET -e NEWS_API_KEY=YOUR_NEWS_API_KEY terceros/hairplan:latest
+   ```
+3. Accedi all'applicazione su:
+   ```bash
+   http://localhost:3000
+   ```
 
 ## Utenti Preimpostati per il Test
 

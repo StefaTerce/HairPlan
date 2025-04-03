@@ -6,7 +6,7 @@
 1. Installa **Docker** (Docker Desktop) funzionante https://www.docker.com/products/docker-desktop/.
 
 L'immagine ufficiale è ospitata su Docker Hub:
-- **Docker Hub Username:** terceros
+- **Docker Hub Username:** terceros https://hub.docker.com/r/terceros/hairplan
 - **Immagine:** `terceros/hairplan:latest`
 
 Per scaricare ed eseguire l'immagine, segui questi passaggi:

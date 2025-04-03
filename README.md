@@ -55,7 +55,7 @@ HairPlan risolve le problematiche legate alla gestione e organizzazione delle pr
 ### Configurazione di DOCKER
 
  Requisiti
-1. Installa **Docker** (Docker Desktop) funzionante https://www.docker.com/products/docker-desktop/.
+1. Installa **Docker** (Docker Desktop o Docker Engine) funzionante https://www.docker.com/products/docker-desktop/.
 
 L'immagine ufficiale è ospitata su Docker Hub:
 - **Docker Hub Username:** terceros https://hub.docker.com/r/terceros/hairplan

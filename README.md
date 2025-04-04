@@ -124,6 +124,7 @@ Questi utenti vengono creati automaticamente nel database al momento dell'inizia
    ```
 5. Apri una Pull Request su GitHub.
 
+## YUML
 ![image](https://github.com/user-attachments/assets/633bd888-184d-41fe-a3e4-a8ec84c2789b)
 
 

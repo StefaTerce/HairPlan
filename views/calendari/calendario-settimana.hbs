@@ -39,17 +39,27 @@
     .calendar-table .slot {
       cursor: pointer;
       transition: background-color 0.3s;
-      min-height: 80px;
+      min-height: 80px; /* Adjusted height */
+      position: relative; /* Needed for absolute positioning of appointment info */
+      padding: 0.5rem; /* Add some padding */
     }
-    .calendar-table .slot:hover {
+    .calendar-table .slot:hover:not(.booked) { /* Only hover effect on available slots */
       background-color: #e9ecef;
     }
-    .appointment {
-      background-color: #d4edda;
-      padding: 0.3rem;
-      border-radius: 5px;
-      font-size: 0.9rem;
-      margin-bottom: 0.3rem;
+    .calendar-table .slot.booked {
+      background-color: #f8d7da; /* Light red for booked slots */
+      cursor: not-allowed;
+      font-size: 0.8rem; /* Smaller font for appointment details */
+      color: #721c24; /* Darker text for booked slots */
+    }
+    .appointment-info {
+        font-weight: bold;
+    }
+    .appointment-desc {
+        font-style: italic;
+        font-size: 0.75rem;
+        display: block; /* Ensure description takes its own line */
+        margin-top: 0.2rem;
     }
   </style>
 </head>
@@ -57,11 +67,10 @@
   <!-- Header -->
   <header>
     <div class="container d-flex justify-content-between align-items-center">
-      <h1>Calendario Settimanale</h1>
+      <h1>Calendario Settimanale - {{username}}</h1>
       <a href="/utente/home" class="back-btn">Torna alla home</a>
     </div>
     <div class="container">
-      <p class="mb-0">Benvenuto, {{username}}</p>
       <p id="weekRange"></p>
     </div>
   </header>
@@ -97,6 +106,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
         </div>
         <div class="modal-body">
+          <div id="modalError" class="alert alert-danger d-none" role="alert"></div>
           <form id="appointmentForm">
             <div class="mb-3">
               <label for="modalDate" class="form-label">Data</label>
@@ -107,14 +117,14 @@
               <input type="text" class="form-control" id="modalTime" name="ora" readonly>
             </div>
             <div class="mb-3">
-              <label for="modalDescription" class="form-label">Descrizione</label>
+              <label for="modalDescription" class="form-label">Descrizione/Servizio</label>
               <textarea class="form-control" id="modalDescription" name="descrizione" rows="3" required></textarea>
             </div>
           </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-          <button type="button" class="btn btn-primary" onclick="saveAppointment()">Salva</button>
+          <button type="button" class="btn btn-primary" id="saveAppointmentBtn">Salva</button>
         </div>
       </div>
     </div>
@@ -127,21 +137,53 @@
   <script>
     // Calcolo della settimana corrente e navigazione
     let currentDate = new Date();
+    let currentAppointments = []; // Array per memorizzare gli appuntamenti della settimana
+    const parrucchiereUsername = '{{username}}'; // Prende l'username dall'URL o contesto HBS
+    const appointmentModal = new bootstrap.Modal(document.getElementById('appointmentModal'));
+    const modalErrorDiv = document.getElementById('modalError');
 
     function getWeekRange(date) {
       const currentDay = date.getDay(); // 0 (Domenica) - 6 (Sabato)
-      const diffToMonday = (currentDay === 0 ? -6 : 1 - currentDay);
-      const diffToSunday = (currentDay === 0 ? 0 : 7 - currentDay);
+      const diffToMonday = (currentDay === 0 ? -6 : 1 - currentDay); // Adjust to make Monday the first day
       const monday = new Date(date);
       monday.setDate(date.getDate() + diffToMonday);
-      const sunday = new Date(date);
-      sunday.setDate(date.getDate() + diffToSunday);
+      monday.setHours(0, 0, 0, 0); // Start of Monday
+
+      const sunday = new Date(monday);
+      sunday.setDate(monday.getDate() + 6);
+      sunday.setHours(23, 59, 59, 999); // End of Sunday
+
       return { monday, sunday };
     }
 
     function formatDate(date) {
+      // Formato YYYY-MM-DD
       return date.toISOString().split('T')[0];
     }
+
+    // Funzione per caricare gli appuntamenti per la settimana corrente
+    async function loadAppointments(startDate, endDate) {
+      try {
+        // Costruisci l'URL corretto per l'API degli appuntamenti
+        const apiUrl = `/utente/calendario/${parrucchiereUsername}/appuntamenti`;
+        console.log(`Fetching appointments from: ${apiUrl}`); // Debug log
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        currentAppointments = await response.json();
+        console.log('Appointments loaded:', currentAppointments); // Debug log
+        // Assicurati che le date/ore siano confrontabili
+        currentAppointments.forEach(app => {
+            app.dateTime = `${app.giorno}T${app.ora}:00`; // Combina data e ora per confronto
+        });
+      } catch (error) {
+        console.error('Errore nel caricamento degli appuntamenti:', error);
+        currentAppointments = []; // Resetta in caso di errore
+        // Mostra un errore all'utente se necessario
+      }
+    }
+
 
     // Genera l'header del calendario (nome del giorno e data sotto)
     function renderCalendarHeader(weekDays) {
@@ -153,35 +195,53 @@
       row.appendChild(thTime);
       weekDays.forEach(day => {
         const th = document.createElement('th');
-        th.innerHTML = `<div>${day.name}</div><div style="font-size:0.9rem;">${day.date}</div>`;
+        // Formatta la data come DD/MM
+        const displayDate = new Date(day.date + 'T00:00:00').toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit' });
+        th.innerHTML = `<div>${day.name}</div><div style="font-size:0.9rem;">${displayDate}</div>`;
         row.appendChild(th);
       });
       header.appendChild(row);
     }
 
-    // Genera il corpo del calendario (ore e slot)
+    // Genera il corpo del calendario (ore e slot) - MODIFICATO
     function renderCalendarBody(weekDays, ore) {
       const body = document.getElementById('calendarBody');
-      body.innerHTML = '';
+      body.innerHTML = ''; // Pulisce il corpo prima di ridisegnare
       ore.forEach(time => {
         const row = document.createElement('tr');
         const tdTime = document.createElement('td');
         tdTime.innerText = time;
         row.appendChild(tdTime);
+
         weekDays.forEach(day => {
           const td = document.createElement('td');
           td.classList.add('slot');
-          td.id = `slot-${day.date}-${time}`;
-          td.addEventListener('click', () => openModal(day.date, time));
-          // Qui, se vuoi, puoi inserire gli appuntamenti già prenotati tramite un'altra funzione AJAX
+          const slotDateTime = `${day.date}T${time}:00`; // Formato ISO semplificato per confronto
+
+          // Cerca se esiste un appuntamento per questo slot
+          const appointment = currentAppointments.find(app => app.dateTime === slotDateTime);
+
+          if (appointment) {
+            // Slot prenotato
+            td.classList.add('booked');
+            td.innerHTML = `<span class="appointment-info">Prenotato</span><span class="appointment-desc">${appointment.descrizione || ''}</span>`;
+            // Non aggiungere l'event listener per aprire il modal
+          } else {
+            // Slot libero
+            td.id = `slot-${day.date}-${time}`; // ID solo per slot liberi
+            td.addEventListener('click', () => openModal(day.date, time));
+          }
           row.appendChild(td);
         });
         body.appendChild(row);
       });
     }
 
-    function renderWeek() {
+    async function renderWeek() {
       const { monday, sunday } = getWeekRange(currentDate);
+      // Carica gli appuntamenti per la settimana visualizzata
+      await loadAppointments(formatDate(monday), formatDate(sunday));
+
       const weekDays = [];
       for (let i = 0; i < 7; i++) {
         const d = new Date(monday);
@@ -190,17 +250,73 @@
         const dayName = d.toLocaleDateString('it-IT', options);
         weekDays.push({
           name: dayName.charAt(0).toUpperCase() + dayName.slice(1),
-          date: formatDate(d)
+          date: formatDate(d) // Formato YYYY-MM-DD
         });
       }
-      document.getElementById('weekRange').innerText = `Settimana: ${formatDate(monday)} - ${formatDate(sunday)}`;
+      // Mostra il range della settimana nell'header
+      const startFormatted = monday.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit' });
+      const endFormatted = sunday.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      document.getElementById('weekRange').innerText = `Settimana: ${startFormatted} - ${endFormatted}`;
+
+      // Renderizza header e corpo
       renderCalendarHeader(weekDays);
-      const ore = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00'];
+      const ore = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00']; // Orari disponibili
       renderCalendarBody(weekDays, ore);
     }
 
-    renderWeek();
+    // --- Gestione Modal ---
+    function openModal(data, time) {
+      // Nascondi eventuali messaggi di errore precedenti
+      modalErrorDiv.classList.add('d-none');
+      modalErrorDiv.textContent = '';
 
+      document.getElementById('modalDate').value = data;
+      document.getElementById('modalTime').value = time;
+      document.getElementById('modalDescription').value = ''; // Pulisci descrizione precedente
+      appointmentModal.show();
+    }
+
+    async function saveAppointment() {
+      const data = document.getElementById('modalDate').value;
+      const time = document.getElementById('modalTime').value;
+      const descrizione = document.getElementById('modalDescription').value;
+
+      // Disabilita il bottone Salva per prevenire click multipli
+      const saveButton = document.getElementById('saveAppointmentBtn');
+      saveButton.disabled = true;
+      modalErrorDiv.classList.add('d-none'); // Nascondi errore
+
+      try {
+        const response = await fetch(`/utente/calendario/${parrucchiereUsername}/appuntamento`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ giorno: data, ora: time, descrizione })
+        });
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          appointmentModal.hide(); // Chiudi il modal
+          await renderWeek(); // Ricarica la vista della settimana per mostrare il nuovo appuntamento
+        } else {
+          // Mostra errore nel modal
+          modalErrorDiv.textContent = result.message || 'Errore nella prenotazione.';
+          modalErrorDiv.classList.remove('d-none');
+        }
+      } catch (error) {
+        console.error('Errore nella chiamata fetch:', error);
+        modalErrorDiv.textContent = 'Errore di comunicazione con il server.';
+        modalErrorDiv.classList.remove('d-none');
+      } finally {
+          // Riabilita il bottone Salva in ogni caso
+          saveButton.disabled = false;
+      }
+    }
+
+    // Event listener per il bottone Salva nel modal
+    document.getElementById('saveAppointmentBtn').addEventListener('click', saveAppointment);
+
+
+    // --- Navigazione Settimane e Inizializzazione ---
     document.getElementById('prevWeek').addEventListener('click', () => {
       currentDate.setDate(currentDate.getDate() - 7);
       renderWeek();
@@ -210,46 +326,19 @@
       renderWeek();
     });
 
-    // Modal per prenotazioni
-    let selectedSlot = {};
+    // Inizializzazione al caricamento della pagina
+    renderWeek();
 
-    function openModal(data, time) {
-      selectedSlot = { data, time };
-      document.getElementById('modalDate').value = data;
-      document.getElementById('modalTime').value = time;
-      document.getElementById('modalDescription').value = '';
-      var modal = new bootstrap.Modal(document.getElementById('appointmentModal'));
-      modal.show();
-    }
-
-    async function saveAppointment() {
-      const data = document.getElementById('modalDate').value;
-      const time = document.getElementById('modalTime').value;
-      const descrizione = document.getElementById('modalDescription').value;
-      try {
-        // Usa l'endpoint basato sul path attuale, ad esempio: /utente/calendario/{{parrucchiere}}/appuntamento
-        const response = await fetch(window.location.pathname + '/appuntamento', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ giorno: data, ora: time, descrizione })
-        });
-        const result = await response.json();
-        if (result.success) {
-          location.reload();
-        } else {
-          alert(result.message || 'Errore nella prenotazione.');
-        }
-      } catch (error) {
-        console.error('Errore:', error);
-      }
-    }
-
-    // Socket.io per aggiornamenti in tempo reale (opzionale)
+    // --- Socket.io per aggiornamenti (Opzionale ma utile) ---
     const socket = io();
     socket.on('appointmentUpdated', data => {
-      // Se l'evento riguarda questo parrucchiere, aggiorna il calendario
-      location.reload();
+      // Se l'aggiornamento riguarda il parrucchiere visualizzato, aggiorna la vista
+      if (data.parrucchiere === parrucchiereUsername) {
+        console.log('Ricevuto aggiornamento via Socket.io, ricarico la settimana...');
+        renderWeek(); // Ricarica la settimana corrente
+      }
     });
+
   </script>
 </body>
 </html>

@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HairPlan - Dashboard Parrucchiere</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary: #f97316;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f9fafb;
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        header {
+            background-color: #000000;
+            box-shadow: var(--shadow);
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .logo {
+            color: white;
+            font-weight: 700;
+            font-size: 1.75rem;
+            margin: 0;
+            text-align: center;
+        }
+        
+        .logo-accent {
+            color: var(--primary);
+        }
+        
+        /* Profile Icon */
+        .profile-icon {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s ease;
+            z-index: 1000;
+        }
+        
+        .profile-icon:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Profile Info Panel */
+        .profile-info {
+            display: none;
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            width: 250px;
+            z-index: 999;
+            border-top: 4px solid var(--primary);
+        }
+        
+        .profile-info p {
+            margin: 0.75rem 0;
+            font-size: 0.95rem;
+        }
+        
+        .logout-btn {
+            display: block;
+            background-color: var(--secondary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: center;
+            margin-top: 1rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+        
+        .logout-btn:hover {
+            background-color: #ea580c;
+            color: white;
+        }
+        
+        /* Dashboard Styling */
+        .dashboard-section {
+            margin-bottom: 2.5rem;
+        }
+        
+        .dashboard-header {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .dashboard-title {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--dark);
+        }
+        
+        .salon-info {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .salon-name {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 0.75rem;
+        }
+        
+        .salon-detail {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            color: var(--gray);
+        }
+        
+        .salon-detail i {
+            width: 20px;
+            color: var(--primary);
+            margin-right: 8px;
+            text-align: center;
+        }
+        
+        .appointment-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: transform 0.2s ease;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .appointment-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+        }
+        
+        .appointment-date {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .appointment-time {
+            display: inline-block;
+            background-color: #e0e7ff;
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .appointment-client {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+        }
+        
+        .client-initial {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            margin-right: 0.75rem;
+        }
+        
+        .appointment-service {
+            background-color: #f8fafc;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-top: 0.75rem;
+            font-size: 0.95rem;
+        }
+        
+        .appointment-service-name {
+            font-weight: 600;
+            display: block;
+            color: var(--dark);
+        }
+        
+        .appointment-service-duration {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+        
+        .appointment-notes {
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            background-color: #fffbeb;
+            border-left: 3px solid #fbbf24;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .appointment-action {
+            display: flex;
+            justify-content: end;
+            margin-top: 1rem;
+        }
+        
+        .btn {
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            padding: 0.5rem 1rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+        
+        .btn-success {
+            background-color: #10b981;
+            border-color: #10b981;
+        }
+        
+        .btn-success:hover {
+            background-color: #059669;
+            border-color: #059669;
+            transform: translateY(-1px);
+        }
+        
+        .btn-danger {
+            background-color: #ef4444;
+            border-color: #ef4444;
+        }
+        
+        .btn-danger:hover {
+            background-color: #dc2626;
+            border-color: #dc2626;
+            transform: translateY(-1px);
+        }
+        
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-weight: 500;
+        }
+        
+        .badge-success {
+            background-color: #10b981;
+            color: white;
+        }
+        
+        .badge-danger {
+            background-color: #ef4444;
+            color: white;
+        }
+        
+        .badge-warning {
+            background-color: #f59e0b;
+            color: white;
+        }
+        
+        .welcome-text {
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background-color: #f0f9ff;
+            color: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .stat-info {
+            text-align: right;
+        }
+        
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark);
+            line-height: 1;
+        }
+        
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+        
+        .empty-state {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 3rem 1.5rem;
+            text-align: center;
+        }
+        
+        .empty-icon {
+            font-size: 3rem;
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+        
+        .empty-title {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+        }
+        
+        .empty-desc {
+            color: var(--gray);
+            max-width: 400px;
+            margin: 0 auto 1.5rem;
+        }
+        
+        /* Tabs Styling */
+        .dashboard-tabs {
+            display: flex;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            gap: 1rem;
+        }
+        
+        .dashboard-tab {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            white-space: nowrap;
+            color: var(--gray);
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .dashboard-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        
+        .dashboard-tab:hover:not(.active) {
+            color: var(--dark);
+            border-bottom-color: #e2e8f0;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        footer {
+            background-color: #000;
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Profile Icon -->
+    <div class="profile-icon" onclick="toggleProfileInfo()">
+        <span>{{firstLetter name}}</span>
+    </div>
+
+    <!-- Profile Information Panel -->
+    <div id="profileInfo" class="profile-info">
+        <p><strong>Nome:</strong> {{name}}</p>
+        <p><strong>Ruolo:</strong> {{role}}</p>
+        <a href="/logout" class="logout-btn">
+            <i class="fas fa-sign-out-alt me-2"></i>Logout
+        </a>
+    </div>
+
+    <header>
+        <h1 class="logo"><span class="logo-accent">Hair</span>Plan</h1>
+    </header>
+    
+    <main class="container">
+        <p class="welcome-text">Benvenuto nella tua dashboard, <strong>{{name}}</strong>!</p>
+        
+        <!-- Salon Information -->
+        <div class="salon-info">
+            <h2 class="salon-name">{{parrucchiere.nome_salone}}</h2>
+            <div class="salon-detail"><i class="fas fa-map-marker-alt"></i> {{parrucchiere.indirizzo}}</div>
+            <div class="salon-detail"><i class="fas fa-phone"></i> {{parrucchiere.telefono}}</div>
+            <div class="salon-detail"><i class="fas fa-scissors"></i> {{parrucchiere.servizi}}</div>
+        </div>
+        
+        <!-- Statistics -->
+        <div class="dashboard-section">
+            <div class="dashboard-header">
+                <h2 class="dashboard-title">Statistiche</h2>
+            </div>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value">{{appuntamenti.length}}</div>
+                        <div class="stat-label">Appuntamenti Totali</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value">{{appuntamentiOggi}}</div>
+                        <div class="stat-label">Appuntamenti Oggi</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value">{{inAttesa}}</div>
+                        <div class="stat-label">In Attesa</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tabs -->
+        <div class="dashboard-tabs">
+            <div class="dashboard-tab active" data-tab="upcoming">Prossimi appuntamenti</div>
+            <div class="dashboard-tab" data-tab="pending">In attesa di conferma</div>
+            <div class="dashboard-tab" data-tab="history">Storico</div>
+        </div>
+        
+        <!-- Upcoming Appointments -->
+        <div id="upcoming" class="tab-content active">
+            <div class="dashboard-section">
+                {{#if prossimiAppuntamenti.length}}
+                    {{#each prossimiAppuntamenti}}
+                    <div class="appointment-card">
+                        <div class="appointment-date">{{formatDate this.data}}</div>
+                        <div class="appointment-time">{{this.ora}}</div>
+                        
+                        <div class="appointment-client">
+                            <div class="client-initial">{{firstLetter this.cliente_name}}</div>
+                            <span><strong>{{this.cliente_name}}</strong></span>
+                        </div>
+                        
+                        <div class="appointment-service">
+                            <span class="appointment-service-name">{{this.servizio}}</span>
+                            <span class="appointment-service-duration">Durata: {{this.durata}} minuti</span>
+                        </div>
+                        
+                        {{#if this.note}}
+                        <div class="appointment-notes">
+                            <i class="fas fa-sticky-note me-2"></i> {{this.note}}
+                        </div>
+                        {{/if}}
+                        
+                        <div class="appointment-action">
+                            <form action="/parrucchiere/cancella-appuntamento" method="POST">
+                                <input type="hidden" name="id" value="{{this.id}}">
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Sei sicuro di voler cancellare questo appuntamento?')">
+                                    <i class="fas fa-times me-1"></i> Cancella
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {{/each}}
+                {{else}}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="far fa-calendar"></i>
+                        </div>
+                        <h3 class="empty-title">Nessun appuntamento confermato</h3>
+                        <p class="empty-desc">Al momento non hai appuntamenti confermati. Controlla la sezione "In attesa di conferma" per eventuali richieste.</p>
+                    </div>
+                {{/if}}
+            </div>
+        </div>
+        
+        <!-- Pending Appointments -->
+        <div id="pending" class="tab-content">
+            <div class="dashboard-section">
+                {{#if appuntamentiInAttesa.length}}
+                    {{#each appuntamentiInAttesa}}
+                    <div class="appointment-card">
+                        <div class="appointment-date">{{formatDate this.data}}</div>
+                        <div class="appointment-time">{{this.ora}}</div>
+                        
+                        <div class="appointment-client">
+                            <div class="client-initial">{{firstLetter this.cliente_name}}</div>
+                            <span><strong>{{this.cliente_name}}</strong></span>
+                        </div>
+                        
+                        <div class="appointment-service">
+                            <span class="appointment-service-name">{{this.servizio}}</span>
+                            <span class="appointment-service-duration">Durata: {{this.durata}} minuti</span>
+                        </div>
+                        
+                        {{#if this.note}}
+                        <div class="appointment-notes">
+                            <i class="fas fa-sticky-note me-2"></i> {{this.note}}
+                        </div>
+                        {{/if}}
+                        
+                        <div class="appointment-action d-flex gap-2 justify-content-end">
+                            <form action="/parrucchiere/conferma-appuntamento" method="POST">
+                                <input type="hidden" name="id" value="{{this.id}}">
+                                <button type="submit" class="btn btn-success btn-sm">
+                                    <i class="fas fa-check me-1"></i> Conferma
+                                </button>
+                            </form>
+                            
+                            <form action="/parrucchiere/cancella-appuntamento" method="POST">
+                                <input type="hidden" name="id" value="{{this.id}}">
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Sei sicuro di voler rifiutare questo appuntamento?')">
+                                    <i class="fas fa-times me-1"></i> Rifiuta
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {{/each}}
+                {{else}}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-hourglass-half"></i>
+                        </div>
+                        <h3 class="empty-title">Nessuna richiesta in attesa</h3>
+                        <p class="empty-desc">Non ci sono appuntamenti da confermare al momento.</p>
+                    </div>
+                {{/if}}
+            </div>
+        </div>
+        
+        <!-- Appointment History -->
+        <div id="history" class="tab-content">
+            <div class="dashboard-section">
+                {{#if storicoAppuntamenti.length}}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Ora</th>
+                                    <th>Cliente</th>
+                                    <th>Servizio</th>
+                                    <th>Durata</th>
+                                    <th>Stato</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each storicoAppuntamenti}}
+                                <tr>
+                                    <td>{{formatDate this.data}}</td>
+                                    <td>{{this.ora}}</td>
+                                    <td>{{this.cliente_name}}</td>
+                                    <td>{{this.servizio}}</td>
+                                    <td>{{this.durata}} min</td>
+                                    <td>
+                                        {{#if (eq this.stato "confermato")}}
+                                        <span class="badge badge-success">Confermato</span>
+                                        {{else if (eq this.stato "in attesa")}}
+                                        <span class="badge badge-warning">In attesa</span>
+                                        {{else}}
+                                        <span class="badge badge-danger">Cancellato</span>
+                                        {{/if}}
+                                    </td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                {{else}}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <h3 class="empty-title">Nessun appuntamento passato</h3>
+                        <p class="empty-desc">Lo storico degli appuntamenti sarà disponibile qui.</p>
+                    </div>
+                {{/if}}
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 HairPlan - Tutti i diritti riservati</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Toggle profile info panel
+        function toggleProfileInfo() {
+            const profileInfo = document.getElementById('profileInfo');
+            profileInfo.style.display = profileInfo.style.display === 'none' || profileInfo.style.display === '' ? 'block' : 'none';
+        }
+        
+        // Tab functionality
+        document.querySelectorAll('.dashboard-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and content
+                document.querySelectorAll('.dashboard-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab and corresponding content
+                tab.classList.add('active');
+                const contentId = tab.getAttribute('data-tab');
+                document.getElementById(contentId).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

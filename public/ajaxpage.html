@@ -3,41 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista Parrucchieri</title>
+    <title>Lista Parrucchieri - HairPlan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary: #f97316;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f9fafb;
+            color: var(--dark);
+            margin: 0;
+            padding: 0;
+            padding-bottom: 60px;
+            min-height: 100vh;
+        }
+        
+        header {
+            background-color: #000;
+            box-shadow: var(--shadow);
+            padding: 1.5rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo {
+            color: white;
+            font-weight: 700;
+            font-size: 1.75rem;
+            margin: 0;
+        }
+        
+        .logo-accent {
+            color: var(--primary);
+        }
+        
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        h1 {
+            color: var(--dark);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        h1::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background-color: var(--primary);
+            margin: 0.75rem auto;
+            border-radius: 4px;
+        }
+        
+        .filter-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-top: 4px solid var(--primary);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+        
+        .form-label {
+            color: var(--dark);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            padding: 0.75rem 1rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        #parrucchiere-list {
+            margin-top: 2rem;
+        }
+        
+        .parrucchiere-item {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: transform 0.2s ease;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .parrucchiere-item:hover {
+            transform: translateY(-3px);
+        }
+        
+        .parrucchiere-nome {
+            font-weight: 700;
+            color: var(--dark);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .parrucchiere-servizi {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+        
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #000;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        .back-link:hover {
+            color: var(--primary-hover);
+        }
+        
+        .back-link i {
+            margin-right: 0.5rem;
+        }
+    </style>
 </head>
 <body>
-    <h1>Lista Parrucchieri</h1>
-    <button id="load-all-parrucchieri">Carica Tutti i Parrucchieri</button>
-    <br>
-    <label for="filter-servizi">Filtra per Servizi:</label>
-    <input type="text" id="filter-servizi" placeholder="Esempio: taglio, shampoo">
-    <button id="load-filtered-parrucchieri">Carica Parrucchieri Filtrati</button>
-
-    <div id="parrucchiere-list">
-        <!-- La lista dei parrucchieri sarà inserita qui -->
+    <header>
+        <h1 class="logo"><span class="logo-accent">Hair</span>Plan</h1>
+    </header>
+    
+    <div class="main-container">
+        <h1>Lista Parrucchieri</h1>
+        
+        <div class="filter-container">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-6">
+                    <button id="load-all-parrucchieri" class="btn btn-primary w-100">
+                        <i class="fas fa-sync-alt me-2"></i>Carica Tutti i Parrucchieri
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <label for="filter-servizi" class="form-label">Filtra per Servizi:</label>
+                    <div class="input-group">
+                        <input type="text" id="filter-servizi" class="form-control" placeholder="Esempio: taglio, shampoo">
+                        <button id="load-filtered-parrucchieri" class="btn btn-primary">
+                            <i class="fas fa-filter me-1"></i> Filtra
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="parrucchiere-list">
+            <!-- La lista dei parrucchieri sarà inserita qui -->
+            <div class="text-center" id="loading-placeholder">
+                <p>Clicca su uno dei pulsanti per caricare la lista dei parrucchieri</p>
+            </div>
+        </div>
+        
+        <div class="text-center">
+            <a href="/" class="back-link">
+                <i class="fas fa-arrow-left"></i> Torna alla Home
+            </a>
+        </div>
     </div>
-
+    
+    <footer>
+        <div class="container">
+            &copy; 2023 HairPlan - Tutti i diritti riservati
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Funzione per caricare tutti i parrucchieri
         document.getElementById('load-all-parrucchieri').addEventListener('click', function() {
+            const listContainer = document.getElementById('parrucchiere-list');
+            listContainer.innerHTML = '<div class="text-center my-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Caricamento...</span></div></div>';
+            
             const xhr = new XMLHttpRequest();
             xhr.open('GET', '/api/parrucchieri', true);
             xhr.onload = function() {
                 if (xhr.status === 200) {
                     const data = JSON.parse(xhr.responseText);
-                    const listContainer = document.getElementById('parrucchiere-list');
-                    listContainer.innerHTML = ''; // Svuota la lista esistente
-                    data.forEach(function(parrucchiere) {
-                        const p = document.createElement('p');
-                        p.textContent = parrucchiere.nome_salone + ' - ' + parrucchiere.servizi_offerti;
-                        listContainer.appendChild(p);
-                    });
+                    displayParrucchieri(data);
                 } else {
-                    alert('Errore nel caricamento dei parrucchieri');
+                    showError('Errore nel caricamento dei parrucchieri');
                 }
             };
             xhr.onerror = function() {
-                alert('Errore di rete');
+                showError('Errore di rete');
             };
             xhr.send();
         });
@@ -45,27 +241,71 @@
         // Funzione per caricare i parrucchieri filtrati per servizi
         document.getElementById('load-filtered-parrucchieri').addEventListener('click', function() {
             const servizi = document.getElementById('filter-servizi').value;
+            if (!servizi.trim()) {
+                alert('Inserisci almeno un servizio per filtrare');
+                return;
+            }
+            
+            const listContainer = document.getElementById('parrucchiere-list');
+            listContainer.innerHTML = '<div class="text-center my-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Caricamento...</span></div></div>';
+            
             const xhr = new XMLHttpRequest();
             xhr.open('GET', '/api/parrucchieri/filtrati?servizi=' + encodeURIComponent(servizi), true);
             xhr.onload = function() {
                 if (xhr.status === 200) {
                     const data = JSON.parse(xhr.responseText);
-                    const listContainer = document.getElementById('parrucchiere-list');
-                    listContainer.innerHTML = ''; // Svuota la lista esistente
-                    data.forEach(function(parrucchiere) {
-                        const p = document.createElement('p');
-                        p.textContent = parrucchiere.nome_salone + ' - ' + parrucchiere.servizi_offerti;
-                        listContainer.appendChild(p);
-                    });
+                    displayParrucchieri(data);
                 } else {
-                    alert('Errore nel caricamento dei parrucchieri filtrati');
+                    showError('Errore nel caricamento dei parrucchieri filtrati');
                 }
             };
             xhr.onerror = function() {
-                alert('Errore di rete');
+                showError('Errore di rete');
             };
             xhr.send();
         });
+        
+        // Funzione per mostrare gli errori
+        function showError(message) {
+            const listContainer = document.getElementById('parrucchiere-list');
+            listContainer.innerHTML = `
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>${message}
+                </div>
+            `;
+        }
+        
+        // Funzione per mostrare i parrucchieri
+        function displayParrucchieri(data) {
+            const listContainer = document.getElementById('parrucchiere-list');
+            listContainer.innerHTML = '';
+            
+            if (data.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="alert alert-info" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>Nessun parrucchiere trovato con i criteri specificati.
+                    </div>
+                `;
+                return;
+            }
+            
+            data.forEach(function(parrucchiere) {
+                const item = document.createElement('div');
+                item.className = 'parrucchiere-item';
+                
+                const nome = document.createElement('div');
+                nome.className = 'parrucchiere-nome';
+                nome.textContent = parrucchiere.nome_salone;
+                
+                const servizi = document.createElement('div');
+                servizi.className = 'parrucchiere-servizi';
+                servizi.innerHTML = '<strong>Servizi:</strong> ' + parrucchiere.servizi_offerti;
+                
+                item.appendChild(nome);
+                item.appendChild(servizi);
+                listContainer.appendChild(item);
+            });
+        }
     </script>
 </body>
 </html>

@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario - HairPlan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary: #f97316;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f9fafb;
+            color: var(--dark);
+            line-height: 1.6;
+            padding-bottom: 70px;
+        }
+        
+        header {
+            background-color: #000000;
+            box-shadow: var(--shadow);
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .logo {
+            color: white;
+            font-weight: 700;
+            font-size: 1.75rem;
+            margin: 0;
+            text-align: center;
+        }
+        
+        .logo-accent {
+            color: var(--primary);
+        }
+        
+        .salon-info {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .salon-name {
+            color: var(--dark);
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .salon-details {
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+        
+        .salon-details i {
+            width: 20px;
+            color: var(--primary);
+            margin-right: 8px;
+            text-align: center;
+        }
+        
+        .calendar-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-top: 4px solid var(--secondary);
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .calendar-title {
+            font-weight: 700;
+            color: var(--dark);
+            font-size: 1.5rem;
+            margin: 0;
+        }
+        
+        .date-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .date-nav-btn {
+            background-color: transparent;
+            border: none;
+            color: var(--primary);
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            padding: 0.25rem 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .date-nav-btn:hover {
+            color: var(--primary-hover);
+        }
+        
+        .current-date {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .time-slot {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .time-slot.available {
+            background-color: #f0fdf4;
+            border-color: #86efac;
+        }
+        
+        .time-slot.booked {
+            background-color: #fef2f2;
+            border-color: #fecaca;
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        
+        .time-slot.selected {
+            background-color: #ecfdf5;
+            border-color: #34d399;
+            box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.2);
+        }
+        
+        .time-slot:not(.booked):hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            background-color: #f0fdf4;
+            border-color: #86efac;
+        }
+        
+        .time-slot-time {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1.1rem;
+        }
+        
+        .time-slot-status {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        
+        .booking-form {
+            margin-top: 2rem;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            padding: 0.75rem 1rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--gray);
+            color: var(--gray);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--gray);
+            color: white;
+            transform: translateY(-1px);
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            transition: color 0.2s ease;
+        }
+        
+        .back-link i {
+            margin-right: 0.5rem;
+        }
+        
+        .back-link:hover {
+            color: var(--primary-hover);
+        }
+        
+        .alert {
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: none;
+        }
+        
+        .alert-success {
+            background-color: #ecfdf5;
+            color: #065f46;
+        }
+        
+        .alert-danger {
+            background-color: #fef2f2;
+            color: #991b1b;
+        }
+        
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-weight: 500;
+        }
+        
+        .badge-success {
+            background-color: #10b981;
+            color: white;
+        }
+        
+        .badge-danger {
+            background-color: #ef4444;
+            color: white;
+        }
+        
+        .badge-warning {
+            background-color: #f59e0b;
+            color: white;
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(3px);
+            display: none;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #000;
+            color: #fff;
+            padding: 1rem 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <header>
+        <h1 class="logo"><span class="logo-accent">Hair</span>Plan</h1>
+    </header>
+
+    <div class="container">
+        <a href="/utente/home" class="back-link">
+            <i class="fas fa-arrow-left"></i> Torna alla lista parrucchieri
+        </a>
+        
+        {{#if successMessage}}
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle me-2"></i> {{successMessage}}
+        </div>
+        {{/if}}
+        
+        {{#if errorMessage}}
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle me-2"></i> {{errorMessage}}
+        </div>
+        {{/if}}
+        
+        <div class="salon-info">
+            <h2 class="salon-name">{{parrucchiere.nome_salone}}</h2>
+            <p class="salon-details"><i class="fas fa-map-marker-alt"></i> {{parrucchiere.indirizzo}}</p>
+            <p class="salon-details"><i class="fas fa-phone"></i> {{parrucchiere.telefono}}</p>
+            <p class="salon-details"><i class="fas fa-scissors"></i> {{parrucchiere.servizi}}</p>
+        </div>
+        
+        <div class="calendar-container">
+            <div class="calendar-header">
+                <h3 class="calendar-title">Seleziona una data e un orario</h3>
+                <div class="date-nav">
+                    <button class="date-nav-btn" id="prevDay" title="Giorno precedente">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <span class="current-date" id="currentDate"></span>
+                    <button class="date-nav-btn" id="nextDay" title="Giorno successivo">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="time-slots" id="timeSlots">
+                <!-- Time slots will be populated here -->
+            </div>
+            
+            <form class="booking-form" id="bookingForm" action="/utente/prenota" method="POST" style="display: none;">
+                <input type="hidden" name="parrucchiere_username" value="{{parrucchiere.username}}">
+                <input type="hidden" name="data" id="bookingDate">
+                <input type="hidden" name="ora" id="bookingTime">
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="servizio" class="form-label">Servizio richiesto</label>
+                        <select class="form-control" id="servizio" name="servizio" required>
+                            <option value="">Seleziona servizio...</option>
+                            {{#each serviziArray}}
+                            <option value="{{this}}">{{this}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="durata" class="form-label">Durata stimata (minuti)</label>
+                        <select class="form-control" id="durata" name="durata" required>
+                            <option value="30">30 minuti</option>
+                            <option value="60" selected>60 minuti</option>
+                            <option value="90">90 minuti</option>
+                            <option value="120">120 minuti</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="note" class="form-label">Note aggiuntive (opzionale)</label>
+                    <textarea class="form-control" id="note" name="note" rows="3" placeholder="Inserisci eventuali note o richieste specifiche..."></textarea>
+                </div>
+                
+                <div class="d-flex gap-2 justify-content-end">
+                    <button type="button" class="btn btn-outline" id="cancelBooking">Annulla</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="far fa-calendar-check me-2"></i>Conferma Prenotazione
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- I tuoi appuntamenti -->
+        {{#if appuntamenti.length}}
+        <div class="calendar-container">
+            <h3 class="calendar-title mb-4">I tuoi appuntamenti</h3>
+            
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Ora</th>
+                            <th>Servizio</th>
+                            <th>Durata</th>
+                            <th>Stato</th>
+                            <th>Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each appuntamenti}}
+                        <tr>
+                            <td>{{formatDate this.data}}</td>
+                            <td>{{this.ora}}</td>
+                            <td>{{this.servizio}}</td>
+                            <td>{{this.durata}} min</td>
+                            <td>
+                                {{#if (eq this.stato "confermato")}}
+                                <span class="badge badge-success">Confermato</span>
+                                {{else if (eq this.stato "in attesa")}}
+                                <span class="badge badge-warning">In attesa</span>
+                                {{else}}
+                                <span class="badge badge-danger">Cancellato</span>
+                                {{/if}}
+                            </td>
+                            <td>
+                                {{#if (eq this.stato "confermato")}}
+                                <form action="/utente/cancella-appuntamento" method="POST" class="d-inline">
+                                    <input type="hidden" name="id" value="{{this.id}}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Sei sicuro di voler cancellare questo appuntamento?')">
+                                        <i class="fas fa-times"></i> Cancella
+                                    </button>
+                                </form>
+                                {{/if}}
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {{/if}}
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 HairPlan - Tutti i diritti riservati</p>
+        </div>
+    </footer>
+
+    <script>
+        // Date and time slots management
+        const timeSlots = document.getElementById('timeSlots');
+        const bookingForm = document.getElementById('bookingForm');
+        const bookingDateInput = document.getElementById('bookingDate');
+        const bookingTimeInput = document.getElementById('bookingTime');
+        const cancelBookingBtn = document.getElementById('cancelBooking');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        
+        // Current Date display and navigation
+        const currentDateElement = document.getElementById('currentDate');
+        const prevDayButton = document.getElementById('prevDay');
+        const nextDayButton = document.getElementById('nextDay');
+        
+        let currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
+        
+        // Format date for display
+        function formatDateForDisplay(date) {
+            const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            return date.toLocaleDateString('it-IT', options);
+        }
+        
+        // Format date for API
+        function formatDateForAPI(date) {
+            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        }
+        
+        // Update the current date display
+        function updateDateDisplay() {
+            currentDateElement.textContent = formatDateForDisplay(currentDate);
+            bookingDateInput.value = formatDateForAPI(currentDate);
+            loadTimeSlots();
+        }
+        
+        // Navigate to previous day
+        prevDayButton.addEventListener('click', () => {
+            const newDate = new Date(currentDate);
+            newDate.setDate(currentDate.getDate() - 1);
+            
+            // Don't allow dates in the past
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            if (newDate >= today) {
+                currentDate = newDate;
+                updateDateDisplay();
+            }
+        });
+        
+        // Navigate to next day
+        nextDayButton.addEventListener('click', () => {
+            const newDate = new Date(currentDate);
+            newDate.setDate(currentDate.getDate() + 1);
+            
+            // Limit to ~3 months in the future
+            const maxDate = new Date();
+            maxDate.setMonth(maxDate.getMonth() + 3);
+            
+            if (newDate <= maxDate) {
+                currentDate = newDate;
+                updateDateDisplay();
+            }
+        });
+        
+        // Load time slots for the selected date
+        function loadTimeSlots() {
+            showLoading();
+            
+            // Clear any selected time slot
+            bookingForm.style.display = 'none';
+            timeSlots.innerHTML = '';
+            
+            // Simple hours for demo - in production you'd fetch from backend
+            const hours = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+            const bookedSlots = {
+                {{#each appuntamenti}}
+                "{{formatDateForJS this.data}}_{{this.ora}}": true,
+                {{/each}}
+            };
+            
+            const dateString = formatDateForAPI(currentDate);
+            
+            hours.forEach(hour => {
+                const isBooked = bookedSlots[`${dateString}_${hour}`];
+                const slot = document.createElement('div');
+                slot.className = `time-slot ${isBooked ? 'booked' : 'available'}`;
+                
+                slot.innerHTML = `
+                    <div class="time-slot-time">${hour}</div>
+                    <div class="time-slot-status">
+                        ${isBooked ? '<span class="badge badge-danger">Occupato</span>' : '<span class="badge badge-success">Disponibile</span>'}
+                    </div>
+                `;
+                
+                if (!isBooked) {
+                    slot.addEventListener('click', () => {
+                        // Deselect all previously selected slots
+                        document.querySelectorAll('.time-slot.selected').forEach(el => {
+                            el.classList.remove('selected');
+                        });
+                        
+                        // Select this slot
+                        slot.classList.add('selected');
+                        
+                        // Show booking form and set values
+                        bookingForm.style.display = 'block';
+                        bookingTimeInput.value = hour;
+                        
+                        // Scroll to booking form
+                        bookingForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    });
+                }
+                
+                timeSlots.appendChild(slot);
+            });
+            
+            hideLoading();
+        }
+        
+        // Cancel booking selection
+        cancelBookingBtn.addEventListener('click', () => {
+            document.querySelectorAll('.time-slot.selected').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            bookingForm.style.display = 'none';
+        });
+        
+        // Form submission
+        bookingForm.addEventListener('submit', (e) => {
+            // In a real app you might want to validate the form here
+            showLoading();
+        });
+        
+        // Loading state functions
+        function showLoading() {
+            loadingOverlay.style.display = 'flex';
+        }
+        
+        function hideLoading() {
+            loadingOverlay.style.display = 'none';
+        }
+        
+        // Initialize calendar
+        updateDateDisplay();
+    </script>
+</body>
+</html>

@@ -4,295 +4,487 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendario {{parrucchiere.nome_salone}} - HairPlan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Stili Generali (simili a home/login) */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            margin: 0;
-            background-color: #f8f9fa; /* Sfondo grigio chiaro */
-            color: #343a40; /* Colore testo scuro */
-            line-height: 1.6;
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary: #f97316;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
         }
+        
+        /* Stili Generali con nuova palette */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            background-color: #f9fafb; /* Sfondo grigio chiaro aggiornato */
+            color: var(--dark); /* Colore testo scuro */
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+        
+        header {
+            background-color: #000000;
+            box-shadow: var(--shadow);
+            padding: 1.5rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo {
+            color: white;
+            font-weight: 700;
+            font-size: 1.75rem;
+            margin: 0;
+        }
+        
+        .logo-accent {
+            color: var(--primary);
+        }
+        
         .container {
             max-width: 1140px; /* Larghezza maggiore per calendario */
             margin: 30px auto;
             padding: 30px;
             background-color: #ffffff; /* Sfondo bianco */
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--secondary);
         }
+        
         h1, h2 {
             text-align: center;
-            color: #343a40;
-            margin-bottom: 15px;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
         }
-        h1 { font-size: 1.8em; font-weight: 600; }
-        h2 { font-size: 1.4em; font-weight: 500; color: #495057; margin-bottom: 30px;}
+        
+        h1 { 
+            font-size: 1.8em; 
+            font-weight: 700;
+        }
+        
+        h2 { 
+            font-size: 1.4em; 
+            font-weight: 600; 
+            color: var(--gray); 
+            margin-bottom: 30px;
+        }
 
-        /* Info Utente e Logout (Coerente) */
+        /* Info Utente e Logout */
         .user-info {
-             position: absolute;
-             top: 15px;
-             right: 15px;
-             background-color: #e9ecef;
-             padding: 10px 15px;
-             border-radius: 5px;
-             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-             font-size: 0.95em;
-             z-index: 1001; /* Sopra il modal backdrop */
-         }
-         .user-info strong { color: #0056b3; } /* Blu per nome utente */
-         .user-info p { margin: 0 0 5px 0; color: #495057; }
-         .logout-btn {
-             display: inline-block;
-             padding: 6px 10px;
-             background-color: #dc3545; /* Rosso per logout */
-             color: white;
-             text-decoration: none;
-             border: none;
-             border-radius: 4px;
-             cursor: pointer;
-             font-size: 0.9em;
-             transition: background-color 0.2s ease;
-             text-align: center;
-         }
-         .logout-btn:hover { background-color: #c82333; }
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background-color: white;
+            padding: 12px 15px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            font-size: 0.95em;
+            z-index: 1001;
+            border-left: 3px solid var(--primary);
+        }
+        
+        .user-info strong { 
+            color: var(--primary); 
+        }
+        
+        .user-info p { 
+            margin: 0 0 5px 0; 
+            color: var(--dark); 
+        }
+        
+        .logout-btn {
+            display: inline-block;
+            padding: 6px 12px;
+            background-color: var(--secondary);
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        
+        .logout-btn:hover { 
+            background-color: #ea580c; 
+            transform: translateY(-1px);
+        }
 
-        /* Navigazione Settimana e Link */
-         .week-nav {
+        /* Navigazione Settimana e Link con stile aggiornato */
+        .week-nav {
             display: flex;
-            justify-content: space-between; /* Spazio tra prev e next */
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 25px;
-            flex-wrap: wrap; /* Va a capo su schermi piccoli */
-            gap: 10px; /* Spazio tra elementi quando vanno a capo */
+            flex-wrap: wrap;
+            gap: 10px;
         }
-        .week-nav .nav-link { /* Stile base link */
-             text-decoration: none;
-             color: #007bff;
-             font-weight: 500;
-             padding: 8px 15px;
-             border: 1px solid #007bff;
-             border-radius: 4px;
-             transition: background-color 0.2s ease, color 0.2s ease;
-             white-space: nowrap; /* Non mandare a capo il testo del bottone */
+        
+        .week-nav .nav-link {
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 600;
+            padding: 10px 15px;
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
         }
-         .week-nav .nav-link:hover {
-             background-color: #007bff;
-             color: white;
-         }
-         .week-nav .current-week-info { /* Testo settimana corrente */
-             font-size: 1.1em;
-             color: #495057;
-             font-weight: 500;
-             text-align: center;
-             flex-grow: 1; /* Occupa spazio disponibile */
-             margin: 0 10px; /* Margine laterale */
-         }
-         /* Link "Torna indietro" */
-        .nav-links { margin-bottom: 30px; text-align: center; }
+        
+        .week-nav .nav-link:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-1px);
+        }
+        
+        .week-nav .current-week-info {
+            font-size: 1.1em;
+            color: var(--dark);
+            font-weight: 600;
+            text-align: center;
+            flex-grow: 1;
+            margin: 0 10px;
+        }
+        
+        /* Link "Torna indietro" */
+        .nav-links { 
+            margin-bottom: 30px; 
+            text-align: center; 
+        }
+        
         .nav-links a {
+            display: inline-flex;
+            align-items: center;
             margin: 0 10px;
             text-decoration: none;
-            color: #007bff; /* Blu primario */
+            color: var(--primary);
             font-weight: 500;
             padding: 8px 12px;
-            border-radius: 4px;
-            transition: background-color 0.2s ease, color 0.2s ease;
+            border-radius: 8px;
+            transition: all 0.2s ease;
         }
-        .nav-links a:hover { background-color: #e7f3ff; /* Sfondo azzurro hover */ color: #0056b3; }
+        
+        .nav-links a:hover { 
+            background-color: #e0e7ff; 
+            color: var(--primary-hover);
+        }
+        
+        .nav-links a i {
+            margin-right: 8px;
+        }
 
-
-        /* Tabella Calendario (Stile Pulito) */
+        /* Tabella Calendario con stile aggiornato */
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
             table-layout: fixed;
-            border: 1px solid #dee2e6; /* Bordo esterno tabella */
+            border: 1px solid #e2e8f0;
         }
+        
         th, td {
-            border: 1px solid #e9ecef; /* Bordi interni più chiari */
-            padding: 8px; /* Padding ridotto */
+            border: 1px solid #e2e8f0;
+            padding: 10px;
             text-align: center;
-            height: 70px; /* Altezza cella */
-            vertical-align: top; /* Allinea contenuto in alto */
-            font-size: 0.9em; /* Dimensione testo celle */
+            height: 70px;
+            vertical-align: top;
+            font-size: 0.95em;
         }
+        
         th {
-            background-color: #f8f9fa; /* Grigio chiaro per header */
-            font-weight: 600; /* Grassetto per header */
-            color: #495057;
-            padding: 12px 8px; /* Più padding verticale per header */
+            background-color: #f1f5f9;
+            font-weight: 600;
+            color: var(--dark);
+            padding: 12px 8px;
         }
-        th .date-placeholder { font-size: 0.9em; font-weight: 400; color: #6c757d; }
+        
+        th .date-placeholder { 
+            font-size: 0.9em; 
+            font-weight: 400; 
+            color: var(--gray); 
+        }
+        
         td.time-header {
             font-weight: 500;
-            background-color: #f8f9fa;
-            width: 90px; /* Larghezza colonna ora */
-            vertical-align: middle; /* Centra ora verticalmente */
-            color: #495057;
+            background-color: #f8fafc;
+            width: 90px;
+            vertical-align: middle;
+            color: var(--dark);
         }
+        
         .time-slot {
             cursor: pointer;
-            background-color: #ffffff; /* Bianco per disponibile */
-            transition: background-color 0.2s ease;
-            position: relative; /* Per posizionare bottone cancella */
+            background-color: #ffffff;
+            transition: all 0.2s ease;
+            position: relative;
         }
+        
         .time-slot:not(.unavailable):hover {
-            background-color: #e7f3ff; /* Azzurrino hover su disponibile */
+            background-color: #e0e7ff;
+            transform: scale(1.02);
         }
+        
         .time-slot.unavailable {
-            background-color: #f1f3f5; /* Grigio molto chiaro per non disponibile */
+            background-color: #f1f5f9;
             cursor: not-allowed;
-            color: #adb5bd; /* Testo grigio chiaro */
+            color: var(--gray);
         }
-         .time-slot.mine {
-             background-color: #d1ecf1; /* Azzurro per i propri appuntamenti */
-             border: 1px solid #bee5eb;
-             font-weight: 500;
-         }
-         .time-slot.mine:hover { background-color: #bee5eb; }
+        
+        .time-slot.mine {
+            background-color: #e0f2fe;
+            border: 1px solid #bae6fd;
+            font-weight: 500;
+        }
+        
+        .time-slot.mine:hover { 
+            background-color: #bae6fd; 
+        }
 
-        /* Bottone Cancella dentro lo slot (per appuntamenti utente) */
+        /* Bottone Cancella dentro lo slot */
         .delete-my-appointment-btn {
             position: absolute;
             bottom: 5px;
             left: 50%;
             transform: translateX(-50%);
-            padding: 3px 8px;
+            padding: 4px 10px;
             font-size: 0.8em;
-            background-color: #dc3545;
+            background-color: var(--secondary);
             color: white;
             border: none;
-            border-radius: 3px;
+            border-radius: 6px;
             cursor: pointer;
-            opacity: 0.8;
-            transition: opacity 0.2s ease;
-            white-space: nowrap; /* Non mandare a capo testo bottone */
+            font-weight: 500;
+            transition: all 0.2s ease;
+            white-space: nowrap;
         }
-        .delete-my-appointment-btn:hover { opacity: 1; }
-        .delete-my-appointment-btn:disabled { background-color: #ccc; cursor: not-allowed; }
+        
+        .delete-my-appointment-btn:hover { 
+            opacity: 1; 
+            background-color: #ea580c;
+            transform: translateX(-50%) translateY(-1px);
+        }
+        
+        .delete-my-appointment-btn:disabled { 
+            background-color: #cbd5e1; 
+            cursor: not-allowed; 
+        }
 
-        /* --- Stili per il Modal --- */
+        /* Modal con stile aggiornato */
         .modal-backdrop {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.6); /* Sfondo scuro semi-trasparente */
-            display: none; /* Nascosto di default */
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none;
             justify-content: center;
             align-items: center;
-            z-index: 1000; /* Sopra tutto tranne user-info forse */
+            z-index: 1000;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
+        
         .modal-backdrop.visible {
             display: flex;
             opacity: 1;
         }
+        
         .modal-content {
             background-color: #fff;
             padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
             width: 90%;
-            max-width: 450px; /* Larghezza massima modal */
+            max-width: 450px;
             position: relative;
             transform: scale(0.95);
             transition: transform 0.3s ease;
+            border-top: 4px solid var(--primary);
         }
+        
         .modal-backdrop.visible .modal-content {
             transform: scale(1);
         }
+        
         .modal-header {
-            border-bottom: 1px solid #dee2e6;
+            border-bottom: 1px solid #e2e8f0;
             padding-bottom: 15px;
             margin-bottom: 20px;
         }
+        
         .modal-header h3 {
             margin: 0;
-            color: #343a40;
+            color: var(--dark);
             font-size: 1.4em;
+            font-weight: 700;
         }
-        .modal-body p { margin: 0 0 15px 0; color: #495057; }
-        .modal-body label { display: block; margin-bottom: 5px; font-weight: 500; }
+        
+        .modal-body p { 
+            margin: 0 0 15px 0; 
+            color: var(--dark); 
+        }
+        
+        .modal-body label { 
+            display: block; 
+            margin-bottom: 5px; 
+            font-weight: 500; 
+            color: var(--dark);
+        }
+        
         .modal-body textarea {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
             min-height: 60px;
-            box-sizing: border-box; /* Include padding nel width */
+            box-sizing: border-box;
             font-family: inherit;
             font-size: 1em;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
+        
+        .modal-body textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
         .modal-footer {
-            border-top: 1px solid #dee2e6;
+            border-top: 1px solid #e2e8f0;
             padding-top: 20px;
             margin-top: 25px;
-            text-align: right; /* Allinea bottoni a destra */
+            text-align: right;
         }
+        
         .modal-button {
             padding: 10px 18px;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 1em;
             font-weight: 500;
-            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            transition: all 0.2s ease;
             margin-left: 10px;
         }
+        
         .modal-button.confirm {
-            background-color: #28a745; /* Verde per conferma */
+            background-color: var(--primary);
             color: white;
         }
-        .modal-button.confirm:hover { background-color: #218838; box-shadow: 0 2px 5px rgba(40, 167, 69, 0.3); }
+        
+        .modal-button.confirm:hover { 
+            background-color: var(--primary-hover); 
+            transform: translateY(-1px);
+        }
+        
         .modal-button.cancel {
-            background-color: #6c757d; /* Grigio per annulla */
+            background-color: #cbd5e1;
+            color: var(--dark);
+        }
+        
+        .modal-button.cancel:hover { 
+            background-color: #94a3b8; 
             color: white;
         }
-        .modal-button.cancel:hover { background-color: #5a6268; }
-        .modal-button:disabled { background-color: #ccc; cursor: not-allowed; }
-        .modal-close-btn { /* Bottone X opzionale */
+        
+        .modal-button:disabled { 
+            background-color: #cbd5e1; 
+            cursor: not-allowed; 
+        }
+        
+        .modal-close-btn {
             position: absolute;
             top: 10px;
             right: 15px;
             background: none;
             border: none;
             font-size: 1.8em;
-            color: #6c757d;
+            color: var(--gray);
             cursor: pointer;
             padding: 0;
             line-height: 1;
+            transition: color 0.2s ease;
         }
-        .modal-close-btn:hover { color: #343a40; }
+        
+        .modal-close-btn:hover { 
+            color: var(--dark); 
+        }
 
-        /* Media Query Specifiche */
-        @media (max-width: 600px) {
+        /* Media Query */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+                margin: 20px 10px;
+            }
+            
             .week-nav {
-                 flex-direction: column; /* Metti i bottoni uno sotto l'altro */
+                flex-direction: column;
             }
+            
             .week-nav .current-week-info {
-                 margin: 10px 0; /* Spazio sopra/sotto il testo */
-                 order: -1; /* Metti il testo sopra i bottoni */
+                margin: 10px 0;
+                order: -1;
             }
-            th, td { font-size: 0.8em; height: 60px; padding: 5px; } /* Riduci testo e padding celle */
-            td.time-header { width: 60px; } /* Riduci larghezza colonna ora */
-            .delete-my-appointment-btn { font-size: 0.7em; padding: 2px 5px; } /* Riduci bottone cancella */
-            .modal-content { padding: 20px; } /* Riduci padding modal */
-            .modal-header h3 { font-size: 1.2em; }
-            .modal-button { padding: 8px 12px; font-size: 0.9em; }
+            
+            .user-info {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 0 auto 20px;
+                width: calc(100% - 30px);
+                text-align: center;
+            }
         }
-
+        
+        @media (max-width: 576px) {
+            th, td { 
+                font-size: 0.8em; 
+                height: 60px; 
+                padding: 5px; 
+            }
+            
+            td.time-header { 
+                width: 60px; 
+            }
+            
+            .delete-my-appointment-btn { 
+                font-size: 0.7em; 
+                padding: 2px 5px; 
+            }
+            
+            .modal-content { 
+                padding: 20px; 
+            }
+            
+            .modal-header h3 { 
+                font-size: 1.2em; 
+            }
+            
+            .modal-button { 
+                padding: 8px 12px; 
+                font-size: 0.9em; 
+            }
+        }
     </style>
 </head>
 <body>
+    <header>
+        <h1 class="logo"><span class="logo-accent">Hair</span>Plan</h1>
+    </header>
+
     <div class="user-info">
         <p>Utente: <strong>{{name}}</strong> ({{role}})</p>
-        <a href="/logout" class="logout-btn">Logout</a>
+        <a href="/logout" class="logout-btn"><i class="fas fa-sign-out-alt me-1"></i> Logout</a>
     </div>
 
     <div class="container">
@@ -301,16 +493,20 @@
 
         {{!-- Navigazione Settimana --}}
         <div class="week-nav">
-            <a href="/utente/calendario/{{parrucchiere.username}}?offset={{prevWeekOffset}}" class="nav-link prev-week">&laquo; Sett. Precedente</a>
+            <a href="/utente/calendario/{{parrucchiere.username}}?offset={{prevWeekOffset}}" class="nav-link prev-week">
+                <i class="fas fa-chevron-left me-2"></i> Sett. Precedente
+            </a>
             <span class="current-week-info">Settimana del <span id="week-start-display"></span></span>
-            <a href="/utente/calendario/{{parrucchiere.username}}?offset={{nextWeekOffset}}" class="nav-link next-week">Sett. Successiva &raquo;</a>
+            <a href="/utente/calendario/{{parrucchiere.username}}?offset={{nextWeekOffset}}" class="nav-link next-week">
+                Sett. Successiva <i class="fas fa-chevron-right ms-2"></i>
+            </a>
         </div>
-        <div class="nav-links" style="text-align:center; margin-top: -15px; margin-bottom: 30px;">
-             <a href="/utente/home" style="font-size: 0.9em;">Torna alla lista parrucchieri</a>
+        <div class="nav-links">
+            <a href="/utente/home"><i class="fas fa-arrow-left"></i> Torna alla lista parrucchieri</a>
         </div>
 
         <table id="calendar-table">
-             <thead>
+            <thead>
                 <tr>
                     <th class="time-header">Ora</th>
                     {{#each giorni}}
@@ -340,15 +536,16 @@
                 <p>Stai prenotando per <strong id="modal-day-time"></strong>.</p>
                 <label for="appointment-description">Descrizione (opzionale):</label>
                 <textarea id="appointment-description" rows="2" placeholder="Es. Taglio, Colore, ecc."></textarea>
-                <p id="modal-error" style="color: red; font-size: 0.9em; margin-top: 10px; display: none;"></p>
+                <p id="modal-error" style="color: #ef4444; font-size: 0.9em; margin-top: 10px; display: none;"></p>
             </div>
             <div class="modal-footer">
                 <button class="modal-button cancel" onclick="hideModal()">Annulla</button>
-                <button class="modal-button confirm" id="modal-confirm-btn">Conferma Prenotazione</button>
+                <button class="modal-button confirm" id="modal-confirm-btn">
+                    <i class="far fa-calendar-check me-2"></i>Conferma Prenotazione
+                </button>
             </div>
         </div>
     </div>
-
 
     {{!-- Script JS --}}
     <script src="/socket.io/socket.io.js"></script>

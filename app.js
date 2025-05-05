@@ -249,6 +249,10 @@ app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
+app.get('/ajax', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'ajaxpage.html'));
+});
+
 // Rotta radice (/) - si comporta come /login o dashboard
 app.get('/', (req, res) => {
     const isAuthenticated = req.session.loggedin || (req.isAuthenticated && req.isAuthenticated());

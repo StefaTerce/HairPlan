@@ -1,124 +1,85 @@
-// db.js
 const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
-
-const dbPath = path.resolve(__dirname, 'hairplan.db');
-const db = new sqlite3.Database(dbPath, (err) => {
-  if (err) {
-    console.error('Errore durante l\'apertura del database:', err.message);
-  } else {
-    console.log('Connesso al database SQLite.');
-  }
+const db = new sqlite3.Database('./hairplan.db', (err) => {
+    if (err) {
+        console.error("Errore connessione database", err.message);
+    } else {
+        console.log("Connesso al database hairplan.");
+    }
 });
 
+// Creazione tabelle se non esistono
 db.serialize(() => {
-  // 1. Creazione delle tabelle, se non esistono
-  db.run(`
-    CREATE TABLE IF NOT EXISTS utenti (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      username TEXT UNIQUE NOT NULL,
-      password TEXT NOT NULL,
-      ruolo TEXT CHECK(ruolo IN ('admin', 'parrucchiere', 'utente')) NOT NULL,
-      nome TEXT NOT NULL,
-      cognome TEXT,
-      email TEXT UNIQUE NOT NULL,
-      telefono TEXT,
-      nome_salone TEXT,
-      indirizzo TEXT,
-      servizi_offerti TEXT
-    )
-  `);
+    // 1. Crea Tabella Utenti (se non esiste)
+    db.run(`CREATE TABLE IF NOT EXISTS utenti (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        ruolo TEXT NOT NULL CHECK(ruolo IN ('admin', 'parrucchiere', 'utente')),
+        nome TEXT NOT NULL,
+        cognome TEXT,
+        email TEXT UNIQUE,
+        telefono TEXT,
+        nome_salone TEXT,
+        indirizzo TEXT,
+        servizi_offerti TEXT
+        -- La colonna 'age' verrà aggiunta sotto se manca
+    )`, (err) => {
+        if (err) console.error("Errore creazione tabella utenti:", err.message);
+        else console.log("Tabella 'utenti' verificata/creata.");
+    });
 
-  db.run(`
-    CREATE TABLE IF NOT EXISTS calendari (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      username TEXT NOT NULL,
-      giorno TEXT NOT NULL,
-      slot TEXT,
-      prenotazioni TEXT,
-      FOREIGN KEY (username) REFERENCES utenti(username) ON DELETE CASCADE
-    )
-  `);
+    // --- AGGIUNTA COLONNA 'age' SE MANCA ---
+    db.run(`ALTER TABLE utenti ADD COLUMN age INTEGER`, (err) => {
+        if (err) {
+            if (!err.message.includes('duplicate column name')) {
+                console.error("Errore aggiunta colonna 'age' a 'utenti':", err.message);
+            } else {
+                console.log("Colonna 'age' già presente in 'utenti'.");
+            }
+        } else {
+            console.log("Colonna 'age' aggiunta/verificata in 'utenti'.");
+        }
+    });
+    // --- FINE AGGIUNTA 'age' ---
 
-  db.run(`
-    CREATE TABLE IF NOT EXISTS appuntamenti (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      parrucchiere_username TEXT NOT NULL,
-      giorno TEXT NOT NULL,
-      ora TEXT NOT NULL,
-      descrizione TEXT,
-      utente TEXT NOT NULL,
-      FOREIGN KEY (parrucchiere_username) REFERENCES utenti(username) ON DELETE CASCADE
-    )
-  `);
+    // 2. Crea Tabella Appuntamenti (se non esiste)
+    db.run(`CREATE TABLE IF NOT EXISTS appuntamenti (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        parrucchiere_username TEXT NOT NULL,
+        giorno TEXT NOT NULL,
+        ora TEXT NOT NULL,
+        descrizione TEXT,
+        utente TEXT NOT NULL,
+        FOREIGN KEY (parrucchiere_username) REFERENCES utenti(username) ON DELETE CASCADE,
+        FOREIGN KEY (utente) REFERENCES utenti(username) ON DELETE CASCADE,
+        UNIQUE(parrucchiere_username, giorno, ora) /* Impedisce doppie prenotazioni */
+    )`, (err) => {
+         if (err) console.error("Errore creazione tabella appuntamenti:", err.message);
+         else console.log("Tabella 'appuntamenti' verificata/creata.");
+    });
 
-  console.log('Tabelle create o già esistenti.');
+    // 3. Crea Tabella Chat (se non esiste)
+    db.run(`CREATE TABLE IF NOT EXISTS chat_messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        sender_username TEXT NOT NULL,
+        receiver_username TEXT NOT NULL,
+        message_content TEXT NOT NULL,
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (sender_username) REFERENCES utenti(username) ON DELETE CASCADE,
+        FOREIGN KEY (receiver_username) REFERENCES utenti(username) ON DELETE CASCADE
+    )`, (err) => {
+         if (err) console.error("Errore creazione tabella chat_messages:", err.message);
+         else console.log("Tabella 'chat_messages' verificata/creata.");
+    });
 
-  // 2. Inserimento utenti di default
-  const defaultUsers = [
-    {
-      username: 'admin',
-      password: 'admin123',
-      ruolo: 'admin',
-      nome: 'Admin',
-      cognome: null,
-      email: 'admin@example.com',
-      telefono: null,
-      nome_salone: null,
-      indirizzo: null,
-      servizi_offerti: null
-    },
-    {
-      username: 'parrucchiere',
-      password: 'parrucchiere123',
-      ruolo: 'parrucchiere',
-      nome: 'Giuseppe',
-      cognome: 'Verdi',
-      email: 'giuseppe@example.com',
-      telefono: '3331234567',
-      nome_salone: 'Salone Rusu',
-      indirizzo: 'Via Roma 10',
-      servizi_offerti: 'Taglio, Colore, Barba'
-    },
-    {
-      username: 'utente',
-      password: 'utente123',
-      ruolo: 'utente',
-      nome: 'Marco',
-      cognome: 'Rossi',
-      email: 'marco@example.com',
-      telefono: null,
-      nome_salone: null,
-      indirizzo: null,
-      servizi_offerti: null
-    }
-  ];
+    // 4. Indici per Performance Chat (Opzionale ma raccomandato)
+    db.run(`CREATE INDEX IF NOT EXISTS idx_chat_conversation ON chat_messages (sender_username, receiver_username, timestamp)`, (err) => {
+        if (err) console.warn("Attenzione indice idx_chat_conversation:", err.message);
+    });
+     db.run(`CREATE INDEX IF NOT EXISTS idx_chat_timestamp ON chat_messages (timestamp)`, (err) => {
+        if (err) console.warn("Attenzione indice idx_chat_timestamp:", err.message);
+    });
 
-  // Usa la clausola OR IGNORE per evitare errori se l'utente esiste già
-  const insertStmt = db.prepare(`
-    INSERT OR IGNORE INTO utenti 
-    (username, password, ruolo, nome, cognome, email, telefono, nome_salone, indirizzo, servizi_offerti)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
-
-  defaultUsers.forEach(user => {
-    insertStmt.run(
-      user.username,
-      user.password,
-      user.ruolo,
-      user.nome,
-      user.cognome,
-      user.email,
-      user.telefono,
-      user.nome_salone,
-      user.indirizzo,
-      user.servizi_offerti
-    );
-  });
-
-  insertStmt.finalize(() => {
-    console.log('Utenti di default inseriti (se non già presenti).');
-  });
 });
 
 module.exports = db;

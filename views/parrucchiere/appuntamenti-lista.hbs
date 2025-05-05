@@ -4,184 +4,270 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>I Miei Appuntamenti - HairPlan</title>
-    {{!-- <link rel="stylesheet" href="/static/css/style.css"> --}}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Stili Generali (simili a home/login) */
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary: #f97316;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             margin: 0;
-            background-color: #f8f9fa; /* Sfondo grigio chiaro */
-            color: #343a40;
+            background-color: #f9fafb; /* Sfondo grigio chiaro aggiornato */
+            color: var(--dark);
             line-height: 1.6;
         }
+        
+        header {
+            background-color: #000000;
+            box-shadow: var(--shadow);
+            padding: 1.5rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo {
+            color: white;
+            font-weight: 700;
+            font-size: 1.75rem;
+            margin: 0;
+        }
+        
+        .logo-accent {
+            color: var(--primary);
+        }
+        
         .container {
-            max-width: 960px; /* Larghezza standard */
+            max-width: 960px;
             margin: 30px auto;
             padding: 30px;
             background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--secondary);
         }
+        
         h1 {
             text-align: center;
-            color: #343a40;
-            margin-bottom: 35px; /* Più spazio sotto il titolo */
-            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
             font-size: 1.8em;
         }
 
-        /* Info Utente e Logout (Coerente) */
+        /* Info Utente e Logout */
         .user-info {
-             position: absolute;
-             top: 15px;
-             right: 15px;
-             background-color: #e9ecef;
-             padding: 10px 15px;
-             border-radius: 5px;
-             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-             font-size: 0.95em;
-             z-index: 10;
-         }
-         .user-info strong { color: #0056b3; }
-         .user-info p { margin: 0 0 5px 0; color: #495057; }
-         .logout-btn {
-             display: inline-block;
-             padding: 6px 10px;
-             background-color: #dc3545; /* Rosso */
-             color: white;
-             text-decoration: none;
-             border: none;
-             border-radius: 4px;
-             cursor: pointer;
-             font-size: 0.9em;
-             transition: background-color 0.2s ease;
-             text-align: center;
-         }
-         .logout-btn:hover { background-color: #c82333; }
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background-color: white;
+            padding: 12px 15px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            font-size: 0.95em;
+            z-index: 1001;
+            border-left: 3px solid var(--primary);
+        }
+        
+        .user-info strong { 
+            color: var(--primary); 
+        }
+        
+        .user-info p { 
+            margin: 0 0 5px 0; 
+            color: var(--dark); 
+        }
+        
+        .logout-btn {
+            display: inline-block;
+            padding: 6px 12px;
+            background-color: var(--secondary);
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        
+        .logout-btn:hover { 
+            background-color: #ea580c; 
+            transform: translateY(-1px);
+        }
 
-        /* Lista Appuntamenti (Stile Card Pulito) */
+        /* Lista Appuntamenti (Stile Card) */
         .appointment-list {
             list-style: none;
             padding: 0;
             margin-top: 20px;
         }
+        
         .appointment-item {
             background-color: #ffffff;
-            border: 1px solid #dee2e6; /* Bordo grigio chiaro */
-            border-radius: 6px;
-            padding: 20px 25px; /* Più padding */
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px 25px;
             margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            transition: box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.3s ease;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
         }
+        
         .appointment-item:hover {
-             box-shadow: 0 4px 8px rgba(0,0,0,0.05); /* Ombra leggera hover */
-             border-left: 4px solid #007bff; /* Bordo blu a sinistra hover */
-             padding-left: 21px; /* Compensa il bordo */
+             box-shadow: var(--shadow);
+             border-left: 4px solid var(--primary);
+             padding-left: 21px;
+             transform: translateY(-2px);
         }
-        .appointment-item.deleting { /* Stile durante cancellazione */
+        
+        .appointment-item.deleting {
             opacity: 0.4;
             pointer-events: none;
-            background-color: #f8d7da; /* Sfondo rosso chiaro */
-            border-color: #f5c6cb;
-            border-left: 4px solid #dc3545; /* Bordo rosso */
-             padding-left: 21px;
+            background-color: #fee2e2;
+            border-color: #fecaca;
+            border-left: 4px solid #ef4444;
+            padding-left: 21px;
         }
+        
         .appointment-details {
             flex-grow: 1;
-            margin-right: 20px; /* Più spazio dal bottone */
+            margin-right: 20px;
         }
+        
         .appointment-details span {
             display: block;
-            margin-bottom: 8px;
-            color: #495057; /* Grigio scuro per dettagli */
-            font-size: 1em; /* Dimensione testo standard */
+            margin-bottom: 10px;
+            color: var(--dark);
+            font-size: 1em;
         }
-        .appointment-details span:last-child { margin-bottom: 0; }
+        
+        .appointment-details span:last-child { 
+            margin-bottom: 0; 
+        }
+        
         .appointment-details strong {
-            color: #343a40; /* Nero per etichette */
-            min-width: 95px; /* Allineamento */
+            color: var(--dark);
+            min-width: 95px;
             display: inline-block;
-            font-weight: 600; /* Leggermente più bold */
+            font-weight: 600;
+        }
+        
+        /* Styling per orario appuntamento */
+        .appointment-time {
+            display: inline-block;
+            background-color: #e0e7ff;
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-left: 8px;
         }
 
-        /* Bottone Cancella (Stile Coerente) */
-         .delete-btn {
-            padding: 9px 16px; /* Padding bottone */
-            background-color: #dc3545; /* Rosso */
+        /* Bottone Cancella */
+        .delete-btn {
+            padding: 9px 16px;
+            background-color: var(--secondary);
             color: white;
             border: none;
-            border-radius: 4px; /* Stesso radius di logout */
+            border-radius: 8px;
             cursor: pointer;
             font-size: 0.95em;
             font-weight: 500;
-            transition: background-color 0.2s ease, transform 0.1s ease;
+            transition: all 0.2s ease;
             flex-shrink: 0;
-            line-height: 1.2; /* Migliore altezza testo */
-         }
-         .delete-btn:hover {
-            background-color: #c82333; /* Rosso scuro hover */
-         }
-         .delete-btn:active {
-             transform: scale(0.97); /* Effetto click leggermente più pronunciato */
-         }
-         .delete-btn:disabled {
-             background-color: #cccccc;
-             cursor: not-allowed;
-         }
+            line-height: 1.2;
+        }
+        
+        .delete-btn:hover {
+            background-color: #ea580c;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(249, 115, 22, 0.3);
+        }
+        
+        .delete-btn:active {
+            transform: scale(0.97);
+        }
+        
+        .delete-btn:disabled {
+            background-color: var(--gray);
+            cursor: not-allowed;
+        }
 
-         /* Messaggio Nessun Appuntamento */
-         .no-appointments {
+        /* Messaggio Nessun Appuntamento */
+        .no-appointments {
             text-align: center;
-            color: #6c757d; /* Grigio */
+            color: var(--gray);
             font-style: italic;
             margin-top: 40px;
             font-size: 1.1em;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 6px;
-         }
+            padding: 30px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            border: 1px dashed #e2e8f0;
+        }
 
-         /* Media query per responsività */
-         @media (max-width: 768px) {
-             .container { margin: 15px; padding: 20px; }
-             h1 { font-size: 1.6em; }
-             .user-info {
-                 position: static;
-                 margin-bottom: 25px;
-                 text-align: center;
-                 background-color: transparent;
-                 box-shadow: none;
-                 padding: 0;
-             }
+        /* Media query per responsività */
+        @media (max-width: 768px) {
+            .container { 
+                margin: 15px; 
+                padding: 20px; 
+            }
+            
+            h1 { 
+                font-size: 1.6em; 
+            }
+            
+            .user-info {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 0 auto 20px;
+                width: calc(100% - 30px);
+                text-align: center;
+            }
+            
             .appointment-item {
                 flex-direction: column;
                 align-items: flex-start;
-                border-left: none; /* Rimuovi bordo hover su mobile */
-                padding-left: 25px;
             }
-             .appointment-item:hover { border-left: none; padding-left: 25px; }
-             .appointment-item.deleting { border-left: none; padding-left: 25px; }
-             .appointment-details {
-                 margin-right: 0;
-                 margin-bottom: 15px;
-                 width: 100%;
-             }
+            
+            .appointment-details {
+                margin-right: 0;
+                margin-bottom: 15px;
+                width: 100%;
+            }
+            
             .delete-btn {
                 width: 100%;
                 text-align: center;
                 padding: 12px;
             }
-         }
+        }
     </style>
 </head>
 <body>
+    <header>
+        <h1 class="logo"><span class="logo-accent">Hair</span>Plan</h1>
+    </header>
+    
     <div class="user-info">
         <p>Parrucchiere: <strong>{{name}}</strong> ({{role}})</p>
-        <a href="/logout" class="logout-btn">Logout</a>
+        <a href="/logout" class="logout-btn"><i class="fas fa-sign-out-alt me-1"></i> Logout</a>
     </div>
 
     <div class="container">
@@ -193,13 +279,15 @@
                 <li class="appointment-item" id="appointment-{{this.id}}">
                     <div class="appointment-details">
                         <span><strong>Data:</strong> {{formatDate this.giorno}}</span>
-                        <span><strong>Ora:</strong> {{this.ora}}</span>
+                        <span><strong>Ora:</strong> <span class="appointment-time">{{this.ora}}</span></span>
                         <span><strong>Utente:</strong> {{this.utente}}</span>
                         {{#if this.descrizione}}
                         <span><strong>Nota:</strong> {{this.descrizione}}</span>
                         {{/if}}
                     </div>
-                    <button class="delete-btn" data-id="{{this.id}}" title="Cancella questo appuntamento">Cancella</button>
+                    <button class="delete-btn" data-id="{{this.id}}" title="Cancella questo appuntamento">
+                        <i class="fas fa-trash-alt me-1"></i> Cancella
+                    </button>
                 </li>
                 {{/each}}
             </ul>
@@ -209,7 +297,7 @@
 
     </div>
 
-    {{!-- Script JS (invariato rispetto a prima, ma lo includo per completezza) --}}
+    {{!-- Script JS --}}
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const hairdresserUsername = '{{username}}';

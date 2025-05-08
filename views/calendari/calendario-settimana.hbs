@@ -473,14 +473,30 @@
         }
 
         /* Media Query */
+        @media (max-width: 992px) {
+            .calendar-table {
+                font-size: 0.85em;
+            }
+            
+            .container {
+                max-width: 100%;
+                padding: 20px 15px;
+            }
+            
+            .week-nav .nav-link {
+                padding: 8px 12px;
+                font-size: 0.9em;
+            }
+        }
+        
         @media (max-width: 768px) {
             .container {
-                padding: 20px 15px;
                 margin: 20px 10px;
             }
             
             .week-nav {
                 flex-direction: column;
+                gap: 10px;
             }
             
             .week-nav .current-week-info {
@@ -499,35 +515,64 @@
                 width: 220px;
                 right: 15px;
             }
+            
+            .calendar-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+                width: 100%;
+            }
+            
+            .nav-links a {
+                display: block;
+                margin-bottom: 10px;
+                text-align: center;
+            }
         }
         
         @media (max-width: 576px) {
             th, td { 
-                font-size: 0.8em; 
-                height: 60px; 
-                padding: 5px; 
+                font-size: 0.75em; 
+                height: 50px; 
+                padding: 4px 2px;
+                min-width: 60px;
             }
             
             td.time-header { 
-                width: 60px; 
+                width: 50px;
+                min-width: 50px;
+                font-size: 0.7em;
             }
             
             .delete-my-appointment-btn { 
-                font-size: 0.7em; 
+                font-size: 0.65em; 
                 padding: 2px 5px; 
             }
             
             .modal-content { 
-                padding: 20px; 
+                padding: 15px; 
             }
             
             .modal-header h3 { 
-                font-size: 1.2em; 
+                font-size: 1.1em; 
             }
             
             .modal-button { 
-                padding: 8px 12px; 
-                font-size: 0.9em; 
+                padding: 6px 10px; 
+                font-size: 0.85em; 
+            }
+            
+            h1 {
+                font-size: 1.4em;
+            }
+            
+            h2 {
+                font-size: 1.1em;
+            }
+            
+            .nav-links a {
+                padding: 8px 10px;
+                font-size: 0.85em;
             }
         }
     </style>

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin - Gestione Parrucchieri</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
       :root {
           --primary: #6366f1;
@@ -16,7 +17,7 @@
           --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
       }
       body {
-          font-family: 'Inter', sans-serif;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           background-color: #f9fafb;
           color: var(--dark);
           margin: 0;
@@ -37,6 +38,8 @@
       .logo-accent {
           color: var(--primary);
       }
+      
+      /* Profile Icon */
       .profile-icon {
           position: fixed;
           top: 20px;
@@ -59,6 +62,8 @@
       .profile-icon:hover {
           transform: scale(1.05);
       }
+      
+      /* Profile Info Panel */
       .profile-info {
           display: none;
           position: fixed;
@@ -76,6 +81,8 @@
           margin: 0.75rem 0;
           font-size: 0.95rem;
       }
+      
+      /* Logout Button */
       .logout-btn {
           display: block;
           background-color: var(--secondary);
@@ -92,6 +99,8 @@
           background-color: #ea580c;
           color: white;
       }
+      
+      /* Main Content */
       main {
           max-width: 1200px;
           margin: 2rem auto;
@@ -102,6 +111,8 @@
           border-radius: 12px;
           box-shadow: var(--shadow);
       }
+      
+      /* Footer Styling */
       footer {
           position: fixed;
           bottom: 0;
@@ -111,6 +122,7 @@
           color: #fff;
           padding: 1rem 0;
           text-align: center;
+          margin-top: 0;
           z-index: 1000;
       }
       
@@ -122,6 +134,88 @@
       
       footer a:hover {
           color: var(--primary-hover);
+      }
+
+      /* Override for the container in footer */
+      footer .container {
+          background-color: transparent; 
+          box-shadow: none;
+          border-top: none;
+          margin: 0 auto;
+          padding: 0 15px;
+      }
+      
+      /* Responsive styles */
+      @media (max-width: 992px) {
+          .container {
+              padding: 20px;
+          }
+          
+          table.table {
+              font-size: 0.95rem;
+          }
+      }
+      
+      @media (max-width: 768px) {
+          .profile-icon {
+              top: 15px;
+              right: 15px;
+              width: 40px;
+              height: 40px;
+              font-size: 16px;
+          }
+          
+          .profile-info {
+              top: 65px;
+              right: 15px;
+              width: 220px;
+              padding: 1rem;
+          }
+          
+          .table-responsive {
+              overflow-x: auto;
+          }
+          
+          h2 {
+              font-size: 1.4rem;
+          }
+          
+          .col-md-6 {
+              margin-bottom: 10px;
+          }
+      }
+      
+      @media (max-width: 576px) {
+          .container {
+              padding: 15px;
+          }
+          
+          h2 {
+              font-size: 1.3rem;
+              margin-bottom: 1rem;
+          }
+          
+          table.table {
+              font-size: 0.85rem;
+          }
+          
+          .form-control {
+              font-size: 0.9rem;
+              padding: 0.5rem 0.75rem;
+          }
+          
+          .btn {
+              padding: 0.5rem 0.75rem;
+              font-size: 0.9rem;
+          }
+          
+          .logo {
+              font-size: 1.5rem;
+          }
+          
+          header {
+              padding: 1.2rem 0;
+          }
       }
   </style>
 </head>
@@ -145,41 +239,43 @@
       <h2 class="text-center mb-4">Gestione Parrucchieri</h2>
       
       <!-- Elenco Parrucchieri -->
-      <table class="table table-striped">
-          <thead>
-              <tr>
-                  <th>Username</th>
-                  <th>Nome</th>
-                  <th>Cognome</th>
-                  <th>Email</th>
-                  <th>Telefono</th>
-                  <th>Nome Salone</th>
-                  <th>Indirizzo</th>
-                  <th>Servizi Offerti</th>
-                  <th>Azioni</th>
-              </tr>
-          </thead>
-          <tbody>
-              {{#each parrucchieri}}
-              <tr>
-                  <td>{{username}}</td>
-                  <td>{{nome}}</td>
-                  <td>{{cognome}}</td>
-                  <td>{{email}}</td>
-                  <td>{{telefono}}</td>
-                  <td>{{nome_salone}}</td>
-                  <td>{{indirizzo}}</td>
-                  <td>{{servizi_offerti}}</td>
-                  <td>
-                      <form action="/admin/parrucchieri/delete" method="POST" class="d-inline">
-                          <input type="hidden" name="username" value="{{username}}">
-                          <button type="submit" class="btn btn-danger btn-sm">Elimina</button>
-                      </form>
-                  </td>
-              </tr>
-              {{/each}}
-          </tbody>
-      </table>
+      <div class="table-responsive">
+          <table class="table table-striped">
+              <thead>
+                  <tr>
+                      <th>Username</th>
+                      <th>Nome</th>
+                      <th>Cognome</th>
+                      <th>Email</th>
+                      <th>Telefono</th>
+                      <th>Nome Salone</th>
+                      <th>Indirizzo</th>
+                      <th>Servizi Offerti</th>
+                      <th>Azioni</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {{#each parrucchieri}}
+                  <tr>
+                      <td>{{username}}</td>
+                      <td>{{nome}}</td>
+                      <td>{{cognome}}</td>
+                      <td>{{email}}</td>
+                      <td>{{telefono}}</td>
+                      <td>{{nome_salone}}</td>
+                      <td>{{indirizzo}}</td>
+                      <td>{{servizi_offerti}}</td>
+                      <td>
+                          <form action="/admin/parrucchieri/delete" method="POST" class="d-inline">
+                              <input type="hidden" name="username" value="{{username}}">
+                              <button type="submit" class="btn btn-danger btn-sm">Elimina</button>
+                          </form>
+                      </td>
+                  </tr>
+                  {{/each}}
+              </tbody>
+          </table>
+      </div>
       
       <!-- Aggiungi Parrucchiere -->
       <h2 class="mt-5">Aggiungi Parrucchiere</h2>
@@ -218,13 +314,6 @@
           </div>
       </form>
   </main>
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
-      function toggleProfileInfo() {
-          const profileInfo = document.getElementById('profileInfo');
-          profileInfo.style.display = profileInfo.style.display === 'block' ? 'none' : 'block';
-      }
-  </script>
   
   <footer>
     <div class="container">
@@ -237,5 +326,11 @@
     </div>
   </footer>
   
+  <script>
+      function toggleProfileInfo() {
+          const profileInfo = document.getElementById('profileInfo');
+          profileInfo.style.display = profileInfo.style.display === 'none' || profileInfo.style.display === '' ? 'block' : 'none';
+      }
+  </script>
 </body>
 </html>

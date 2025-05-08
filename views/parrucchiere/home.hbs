@@ -420,11 +420,114 @@
         }
         
         footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
             background-color: #000;
-            color: white;
-            padding: 1.5rem 0;
+            color: #fff;
+            padding: 1rem 0;
             text-align: center;
-            margin-top: 3rem;
+            margin-top: 0; /* Rimuovere margin-top quando position è fixed */
+            z-index: 1000;
+        }
+        
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        footer a:hover {
+            color: var(--primary-hover);
+        }
+        
+        /* Additional responsive styles */
+        @media (max-width: 992px) {
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .profile-icon {
+                top: 15px;
+                right: 15px;
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+            
+            .profile-info {
+                top: 65px;
+                right: 15px;
+                width: 220px;
+                padding: 1rem;
+            }
+            
+            .salon-info {
+                padding: 1.2rem;
+            }
+            
+            .salon-name {
+                font-size: 1.3rem;
+            }
+            
+            .dashboard-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .dashboard-tab {
+                flex: 1 0 auto;
+                text-align: center;
+                min-width: 120px;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .appointment-card {
+                padding: 1rem;
+            }
+            
+            .appointment-date {
+                font-size: 1rem;
+            }
+            
+            .appointment-action {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .appointment-action form {
+                width: 100%;
+            }
+            
+            .appointment-action button {
+                width: 100%;
+            }
+            
+            .appointment-service {
+                font-size: 0.85rem;
+            }
+            
+            .client-initial {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+            
+            .dashboard-section {
+                margin-bottom: 1.5rem;
+            }
         }
     </style>
 </head>
@@ -659,6 +762,11 @@
     <footer>
         <div class="container">
             <p>&copy; 2023 HairPlan - Tutti i diritti riservati</p>
+            <p>
+                <a href="/api-docs" target="_blank">API Documentazione</a> | 
+                <a href="/ajax" class="mx-2">Pagina AJAX</a> |
+                <a href="https://github.com/StefaTerce/HairPlan" target="_blank">GitHub</a>
+            </p>
         </div>
     </footer>
     

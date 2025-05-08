@@ -27,6 +27,7 @@
             color: var(--dark);
             display: flex;
             flex-direction: column;
+            padding-bottom: 180px; /* Allineato con register */
         }
         
         header {
@@ -137,19 +138,64 @@
             color: var(--primary-hover);
         }
         
-        .back-home {
-            display: inline-block;
-            margin-top: 1rem;
-            color: var(--primary);
-            text-decoration: none;
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .login-card {
+                max-width: 100%;
+                margin: 0 15px;
+            }
+            
+            .card-header {
+                padding: 1.2rem;
+            }
+            
+            .card-body {
+                padding: 1.5rem;
+            }
+            
+            .card-title {
+                font-size: 1.4rem;
+            }
         }
         
-        .back-home:hover {
-            color: var(--primary-hover);
-        }
-        
-        .back-home i {
-            margin-right: 0.5rem;
+        @media (max-width: 576px) {
+            header {
+                padding: 1rem 0;
+                margin-bottom: 1rem;
+            }
+            
+            .logo {
+                font-size: 1.5rem;
+            }
+            
+            .main-container {
+                padding: 10px;
+            }
+            
+            .card-header {
+                padding: 1rem;
+            }
+            
+            .card-body {
+                padding: 1.2rem;
+            }
+            
+            .card-title {
+                font-size: 1.3rem;
+            }
+            
+            .btn-primary {
+                padding: 0.6rem 1.2rem;
+            }
+            
+            .form-label {
+                margin-bottom: 0.3rem;
+                font-size: 0.9rem;
+            }
+            
+            .form-control {
+                padding: 0.6rem 0.8rem;
+            }
         }
         
         footer {
@@ -157,6 +203,11 @@
             color: #fff;
             padding: 1rem 0;
             text-align: center;
+            margin-top: 1rem; /* Ridotto margine superiore */
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
         }
         
         footer a {

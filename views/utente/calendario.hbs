@@ -399,6 +399,106 @@
             background-color: #ea580c;
             color: white;
         }
+
+        /* Additional responsive styles */
+        @media (max-width: 992px) {
+            .container {
+                max-width: 100%;
+                padding: 20px;
+            }
+            
+            .calendar-container, .salon-info {
+                padding: 1.2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .profile-icon {
+                top: 15px;
+                right: 15px;
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+            
+            .profile-info {
+                top: 65px;
+                right: 15px;
+                width: 220px;
+                padding: 1rem;
+            }
+            
+            .salon-name {
+                font-size: 1.3rem;
+            }
+            
+            .time-slots {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 0.75rem;
+            }
+            
+            .date-nav-btn {
+                font-size: 1.1rem;
+            }
+            
+            .current-date {
+                font-size: 0.9rem;
+            }
+            
+            .calendar-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: center;
+            }
+            
+            .calendar-title {
+                font-size: 1.2rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .time-slots {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .time-slot {
+                padding: 0.8rem;
+            }
+            
+            .time-slot-time {
+                font-size: 1rem;
+            }
+            
+            .time-slot-status {
+                font-size: 0.8rem;
+                margin-top: 0.3rem;
+            }
+            
+            .booking-form {
+                padding: 1rem;
+            }
+            
+            .form-label {
+                font-size: 0.9rem;
+            }
+            
+            footer {
+                padding: 0.75rem 0;
+                font-size: 0.9rem;
+            }
+            
+            .back-link {
+                font-size: 0.9rem;
+            }
+            
+            .salon-details {
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 <body>

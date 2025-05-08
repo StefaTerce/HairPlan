@@ -233,17 +233,25 @@
         }
 
         /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .row {
+                row-gap: 20px;
+            }
+        }
+        
         @media (max-width: 768px) {
             .profile-icon {
                 top: 15px;
                 right: 15px;
                 width: 40px;
                 height: 40px;
+                font-size: 16px;
             }
 
             .profile-info {
                 width: 220px;
                 right: 15px;
+                top: 65px;
             }
 
             header {
@@ -252,6 +260,53 @@
 
             .welcome-text {
                 font-size: 1rem;
+            }
+            
+            .salon-container {
+                margin-top: 2rem;
+            }
+            
+            .salon-header h2 {
+                font-size: 1.4rem;
+            }
+            
+            #visitorCount {
+                font-size: 0.85rem;
+                margin-bottom: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .salon-card {
+                margin-bottom: 15px;
+            }
+            
+            .salon-card .card-title {
+                font-size: 1.1rem;
+                padding-bottom: 0.5rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .salon-card .card-text {
+                font-size: 0.9rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .calendar-btn {
+                padding: 0.6rem 0.75rem;
+            }
+            
+            footer {
+                padding: 0.75rem 0;
+                font-size: 0.9rem;
+            }
+            
+            .welcome-text {
+                font-size: 0.95rem;
             }
         }
     </style>

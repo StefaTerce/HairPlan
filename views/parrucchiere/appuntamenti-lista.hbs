@@ -63,47 +63,67 @@
             font-size: 1.8em;
         }
 
-        /* Info Utente e Logout */
-        .user-info {
+        /* Profile Icon */
+        .profile-icon {
             position: fixed;
-            top: 15px;
-            right: 15px;
+            top: 20px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s ease;
+            z-index: 1000;
+        }
+        
+        .profile-icon:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Profile Info Panel */
+        .profile-info {
+            display: none;
+            position: fixed;
+            top: 80px;
+            right: 20px;
             background-color: white;
-            padding: 12px 15px;
+            padding: 1.5rem;
             border-radius: 12px;
             box-shadow: var(--shadow);
-            font-size: 0.95em;
-            z-index: 1001;
-            border-left: 3px solid var(--primary);
+            width: 250px;
+            z-index: 999;
+            border-top: 4px solid var(--primary);
         }
         
-        .user-info strong { 
-            color: var(--primary); 
-        }
-        
-        .user-info p { 
-            margin: 0 0 5px 0; 
-            color: var(--dark); 
+        .profile-info p {
+            margin: 0.75rem 0;
+            font-size: 0.95rem;
         }
         
         .logout-btn {
-            display: inline-block;
-            padding: 6px 12px;
+            display: block;
             background-color: var(--secondary);
             color: white;
-            text-decoration: none;
-            border: none;
+            padding: 0.5rem 1rem;
             border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9em;
-            font-weight: 500;
-            transition: all 0.2s ease;
+            text-decoration: none;
             text-align: center;
+            margin-top: 1rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
         }
         
         .logout-btn:hover { 
             background-color: #ea580c; 
-            transform: translateY(-1px);
+            color: white;
         }
 
         /* Lista Appuntamenti (Stile Card) */
@@ -233,13 +253,19 @@
                 font-size: 1.6em; 
             }
             
-            .user-info {
-                position: relative;
-                top: auto;
-                right: auto;
-                margin: 0 auto 20px;
-                width: calc(100% - 30px);
-                text-align: center;
+            .profile-icon {
+                top: 15px;
+                right: 15px;
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+            
+            .profile-info {
+                top: 70px;
+                right: 15px;
+                width: 220px;
+                padding: 1rem;
             }
             
             .appointment-item {
@@ -259,13 +285,56 @@
                 padding: 12px;
             }
         }
+        
+        /* Additional responsive styles for smaller devices */
+        @media (max-width: 576px) {
+            .container {
+                padding: 15px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 1.4em;
+                margin-bottom: 1rem;
+            }
+            
+            .appointment-item {
+                padding: 15px;
+            }
+            
+            .appointment-details span {
+                font-size: 0.9em;
+                margin-bottom: 7px;
+            }
+            
+            .appointment-time {
+                padding: 3px 8px;
+                margin-left: 5px;
+                font-size: 0.8rem;
+            }
+            
+            .delete-btn {
+                font-size: 0.85em;
+                padding: 10px;
+            }
+            
+            .no-appointments {
+                padding: 20px;
+                font-size: 0.95em;
+            }
+        }
 
         footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
             background-color: #000;
             color: #fff;
             padding: 1rem 0;
             text-align: center;
-            margin-top: 2rem;
+            margin-top: 0;
+            z-index: 1000;
         }
         
         footer a {
@@ -277,16 +346,35 @@
         footer a:hover {
             color: var(--primary-hover);
         }
+        
+        /* Override per il container nel footer */
+        footer .container {
+            background-color: transparent; 
+            box-shadow: none;
+            border-top: none;
+            margin: 0 auto;
+            padding: 0 15px;
+            max-width: 1140px;
+        }
     </style>
 </head>
 <body>
     <header>
         <h1 class="logo"><span class="logo-accent">Hair</span>Plan</h1>
     </header>
-    
-    <div class="user-info">
-        <p>Parrucchiere: <strong>{{name}}</strong> ({{role}})</p>
-        <a href="/logout" class="logout-btn"><i class="fas fa-sign-out-alt me-1"></i> Logout</a>
+
+    <!-- Profile Icon -->
+    <div class="profile-icon" onclick="toggleProfileInfo()">
+        <span>{{firstLetter name}}</span>
+    </div>
+
+    <!-- Profile Information Panel -->
+    <div id="profileInfo" class="profile-info">
+        <p><strong>Nome:</strong> {{name}}</p>
+        <p><strong>Ruolo:</strong> {{role}}</p>
+        <a href="/logout" class="logout-btn">
+            <i class="fas fa-sign-out-alt me-2"></i>Logout
+        </a>
     </div>
 
     <div class="container">
@@ -363,6 +451,12 @@
                 location.reload(true);
             } else { console.log(`PARRUCCHIERE (${hairdresserUsername}): Aggiornamento non rilevante.`); }
         });
+
+        // Toggle profile info panel
+        function toggleProfileInfo() {
+            const profileInfo = document.getElementById('profileInfo');
+            profileInfo.style.display = profileInfo.style.display === 'none' || profileInfo.style.display === '' ? 'block' : 'none';
+        }
     </script>
 
     <footer>

@@ -23,6 +23,7 @@
             background-color: #f9fafb;
             color: var(--dark);
             line-height: 1.6;
+            padding-bottom: 100px; /* Spazio per evitare che il contenuto sia nascosto dal footer */
         }
 
         header {
@@ -348,6 +349,42 @@
             profileInfo.style.display = profileInfo.style.display === 'none' || profileInfo.style.display === '' ? 'block' : 'none';
         }
     </script>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 HairPlan - Tutti i diritti riservati</p>
+            <p>
+                <a href="/api-docs" target="_blank">API Documentazione</a> | 
+                <a href="/ajax" class="mx-2">Pagina AJAX</a> |
+                <a href="https://github.com/StefaTerce/HairPlan" target="_blank">GitHub</a>
+            </p>
+        </div>
+    </footer>
+    
+    <style>
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #000;
+            color: #fff;
+            padding: 1rem 0;
+            text-align: center;
+            margin-top: 0; /* Rimuovere margin-top quando position è fixed */
+            z-index: 1000;
+        }
+        
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        footer a:hover {
+            color: var(--primary-hover);
+        }
+    </style>
 </body>
 
 </html>

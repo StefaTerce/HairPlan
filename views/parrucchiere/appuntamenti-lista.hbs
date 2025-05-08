@@ -23,6 +23,7 @@
             background-color: #f9fafb; /* Sfondo grigio chiaro aggiornato */
             color: var(--dark);
             line-height: 1.6;
+            padding-bottom: 80px; /* Spazio per il footer */
         }
         
         header {
@@ -258,6 +259,24 @@
                 padding: 12px;
             }
         }
+
+        footer {
+            background-color: #000;
+            color: #fff;
+            padding: 1rem 0;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        footer a:hover {
+            color: var(--primary-hover);
+        }
     </style>
 </head>
 <body>
@@ -345,5 +364,16 @@
             } else { console.log(`PARRUCCHIERE (${hairdresserUsername}): Aggiornamento non rilevante.`); }
         });
     </script>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 HairPlan - Tutti i diritti riservati</p>
+            <p>
+                <a href="/api-docs" target="_blank">API Documentazione</a> | 
+                <a href="/ajax" class="mx-2">Pagina AJAX</a> |
+                <a href="https://github.com/StefaTerce/HairPlan" target="_blank">GitHub</a>
+            </p>
+        </div>
+    </footer>
 </body>
 </html>

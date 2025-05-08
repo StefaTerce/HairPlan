@@ -22,7 +22,7 @@
             background-color: #f9fafb;
             color: var(--dark);
             line-height: 1.6;
-            padding-bottom: 70px;
+            padding-bottom: 100px; /* Spazio per evitare che il contenuto sia nascosto dal footer */
         }
         
         header {
@@ -318,17 +318,106 @@
         footer {
             position: fixed;
             bottom: 0;
+            left: 0;
             width: 100%;
             background-color: #000;
             color: #fff;
             padding: 1rem 0;
             text-align: center;
+            z-index: 1000;
+        }
+        
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        footer a:hover {
+            color: var(--primary-hover);
+        }
+
+        /* Profile Icon */
+        .profile-icon {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s ease;
+            z-index: 1000;
+        }
+
+        .profile-icon:hover {
+            transform: scale(1.05);
+        }
+
+        /* Profile Info Panel */
+        .profile-info {
+            display: none;
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            width: 250px;
+            z-index: 999;
+            border-top: 4px solid var(--primary);
+        }
+
+        .profile-info p {
+            margin: 0.75rem 0;
+            font-size: 0.95rem;
+        }
+
+        .logout-btn {
+            display: block;
+            background-color: var(--secondary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: center;
+            margin-top: 1rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #ea580c;
+            color: white;
         }
     </style>
 </head>
 <body>
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
+    </div>
+
+    <!-- Profile Icon -->
+    <div class="profile-icon" onclick="toggleProfileInfo()">
+        <span>{{firstLetter name}}</span>
+    </div>
+
+    <!-- Profile Information Panel -->
+    <div id="profileInfo" class="profile-info">
+        <p><strong>Nome:</strong> {{name}}</p>
+        <p><strong>Ruolo:</strong> {{role}}</p>
+        <a href="/logout" class="logout-btn">
+            <i class="fas fa-sign-out-alt me-2"></i>Logout
+        </a>
     </div>
 
     <header>
@@ -472,6 +561,11 @@
     <footer>
         <div class="container">
             <p>&copy; 2023 HairPlan - Tutti i diritti riservati</p>
+            <p>
+                <a href="/api-docs" target="_blank">API Documentazione</a> | 
+                <a href="/ajax" class="mx-2">Pagina AJAX</a> |
+                <a href="https://github.com/StefaTerce/HairPlan" target="_blank">GitHub</a>
+            </p>
         </div>
     </footer>
 
@@ -621,6 +715,12 @@
         
         // Initialize calendar
         updateDateDisplay();
+        
+        // Toggle profile info panel
+        function toggleProfileInfo() {
+            const profileInfo = document.getElementById('profileInfo');
+            profileInfo.style.display = profileInfo.style.display === 'none' || profileInfo.style.display === '' ? 'block' : 'none';
+        }
     </script>
 </body>
 </html>

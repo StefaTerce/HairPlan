@@ -24,7 +24,7 @@
             background-color: #f9fafb; /* Sfondo grigio chiaro aggiornato */
             color: var(--dark); /* Colore testo scuro */
             line-height: 1.6;
-            padding-bottom: 60px;
+            padding-bottom: 100px; /* Spazio aumentato per il footer fisso */
         }
         
         header {
@@ -74,47 +74,67 @@
             margin-bottom: 30px;
         }
 
-        /* Info Utente e Logout */
-        .user-info {
+        /* Profile Icon */
+        .profile-icon {
             position: fixed;
-            top: 15px;
-            right: 15px;
+            top: 20px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s ease;
+            z-index: 1000;
+        }
+
+        .profile-icon:hover {
+            transform: scale(1.05);
+        }
+
+        /* Profile Info Panel */
+        .profile-info {
+            display: none;
+            position: fixed;
+            top: 80px;
+            right: 20px;
             background-color: white;
-            padding: 12px 15px;
+            padding: 1.5rem;
             border-radius: 12px;
             box-shadow: var(--shadow);
-            font-size: 0.95em;
-            z-index: 1001;
-            border-left: 3px solid var(--primary);
+            width: 250px;
+            z-index: 999;
+            border-top: 4px solid var(--primary);
         }
-        
-        .user-info strong { 
-            color: var(--primary); 
-        }
-        
-        .user-info p { 
-            margin: 0 0 5px 0; 
-            color: var(--dark); 
+
+        .profile-info p {
+            margin: 0.75rem 0;
+            font-size: 0.95rem;
         }
         
         .logout-btn {
-            display: inline-block;
-            padding: 6px 12px;
+            display: block;
             background-color: var(--secondary);
             color: white;
-            text-decoration: none;
-            border: none;
+            padding: 0.5rem 1rem;
             border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9em;
-            font-weight: 500;
-            transition: all 0.2s ease;
+            text-decoration: none;
             text-align: center;
+            margin-top: 1rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
         }
-        
-        .logout-btn:hover { 
-            background-color: #ea580c; 
-            transform: translateY(-1px);
+
+        .logout-btn:hover {
+            background-color: #ea580c;
+            color: white;
         }
 
         /* Navigazione Settimana e Link con stile aggiornato */
@@ -420,6 +440,38 @@
             color: var(--dark); 
         }
 
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #000;
+            color: #fff;
+            padding: 1rem 0;
+            text-align: center;
+            margin-top: 0; /* Rimuovere margin-top quando position è fixed */
+            z-index: 1000;
+        }
+        
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        footer a:hover {
+            color: var(--primary-hover);
+        }
+
+        /* Override per il container nel footer */
+        footer .container {
+            background-color: transparent; 
+            box-shadow: none;
+            border-top: none;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
         /* Media Query */
         @media (max-width: 768px) {
             .container {
@@ -436,13 +488,16 @@
                 order: -1;
             }
             
-            .user-info {
-                position: relative;
-                top: auto;
-                right: auto;
-                margin: 0 auto 20px;
-                width: calc(100% - 30px);
-                text-align: center;
+            .profile-icon {
+                top: 15px;
+                right: 15px;
+                width: 40px;
+                height: 40px;
+            }
+
+            .profile-info {
+                width: 220px;
+                right: 15px;
             }
         }
         
@@ -482,9 +537,18 @@
         <h1 class="logo"><span class="logo-accent">Hair</span>Plan</h1>
     </header>
 
-    <div class="user-info">
-        <p>Utente: <strong>{{name}}</strong> ({{role}})</p>
-        <a href="/logout" class="logout-btn"><i class="fas fa-sign-out-alt me-1"></i> Logout</a>
+    <!-- Profile Icon -->
+    <div class="profile-icon" onclick="toggleProfileInfo()">
+        <span>{{firstLetter name}}</span>
+    </div>
+
+    <!-- Profile Information Panel -->
+    <div id="profileInfo" class="profile-info">
+        <p><strong>Nome:</strong> {{name}}</p>
+        <p><strong>Ruolo:</strong> {{role}}</p>
+        <a href="/logout" class="logout-btn">
+            <i class="fas fa-sign-out-alt me-2"></i>Logout
+        </a>
     </div>
 
     <div class="container">
@@ -740,7 +804,23 @@
             document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && modal.classList.contains('visible')) hideModal(); });
             modal.addEventListener('click', (event) => { if (event.target === modal) hideModal(); });
         });
-
+        
+        // Toggle profile info panel
+        function toggleProfileInfo() {
+            const profileInfo = document.getElementById('profileInfo');
+            profileInfo.style.display = profileInfo.style.display === 'none' || profileInfo.style.display === '' ? 'block' : 'none';
+        }
     </script>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 HairPlan - Tutti i diritti riservati</p>
+            <p>
+                <a href="/api-docs" target="_blank">API Documentazione</a> | 
+                <a href="/ajax" class="mx-2">Pagina AJAX</a> |
+                <a href="https://github.com/StefaTerce/HairPlan" target="_blank">GitHub</a>
+            </p>
+        </div>
+    </footer>
 </body>
 </html>
